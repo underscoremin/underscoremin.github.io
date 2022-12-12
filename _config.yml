@@ -2,15 +2,15 @@
 #
 # This is the configuration file for your blog, please change these items after forked.
 
-title: Your title
-email: your-email@example.com
-name: Your name
+title: underscoreminis
+email: underscoremin@proton.me
+name: _min
 description: >- # this means to ignore newlines until "baseurl:"
-  Write an awesome description for your new site here.
-keywords: [Your keywords]
-baseurl: '' # the subpath of your site, e.g. /`blog
-url: '' # the base hostname & protocol for your site, e.g. http://example.com
-domain: 'example.com' # the domain name for your site, e.g. example.com
+  Mini security posts. 
+keywords: [security]
+baseurl: '/underscoreminis' # the subpath of your site, e.g. /`blog
+url: 'https://underscoremin.github.io' # the base hostname & protocol for your site, e.g. http://example.com
+domain: 'github.io' # the domain name for your site, e.g. example.com
 language: en
 # Supported languages list:
 # en: English
@@ -23,10 +23,8 @@ language: en
 # zh-tw: 繁體中文 (Traditional Chinese)
 # ko : 한국어 (Korean)
 
-analytics: # the Google Analytics property ID, e.g. UA-XXXXX-Y
-
 comments: false # enable comments
-disqus: # disqus account
+# disqus: # disqus account
 
 mathjax: true # Math support
 diagram: true # Diagrams support
