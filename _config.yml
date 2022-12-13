@@ -1,7 +1,3 @@
-# Welcome to Jekyll Paper for Github
-#
-# This is the configuration file for your blog, please change these items after forked.
-
 title: underscoreminis
 email: underscoremin@proton.me
 name: _min
@@ -10,7 +6,7 @@ description: >- # this means to ignore newlines until "baseurl:"
 keywords: [security]
 baseurl: '/underscoreminis' # the subpath of your site, e.g. /`blog
 url: 'https://underscoremin.github.io' # the base hostname & protocol for your site, e.g. http://example.com
-domain: 'github.io' # the domain name for your site, e.g. example.com
+# domain: 'github.io' # the domain name for your site, e.g. example.com
 language: en
 # Supported languages list:
 # en: English
