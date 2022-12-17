@@ -31,17 +31,25 @@ unambiguously resolvable. For example, the internet is a single DNS namespace.
 
 ### How is the DNS Namespace Structured? 
 At the top of the DNS namespace is the root domain and is identified by the 
-empty label, hence in this post I will represent it as:  
-- .\<empty label\>  
+empty label, hence in this post I will represent a period by itself:   
+
+```mermaid
+flowchart TD
+    .
+```  
 <br> 
     
-Underneath the root domains you have the **Top Level Domains** 
-(**TLDs**), some examples are:  
-- .com  
-- .edu  
-- .org  
-- .net     
+Underneath the root domains you have the **Top Level Domains** (**TLDs**), 
+some examples are:  
 
+```mermaid
+flowchart TD
+    . --> .com
+    . --> .edu
+    . --> .org
+    . --> .net
+    . --> ...
+```  
 <br> 
 Underneath the TLDs you have **Second Level Domains** (**SLDs**). These are
 often the domain names individuals and companies buy to host their websites, for
@@ -57,12 +65,6 @@ Level domains are commonly referred to as **subdomains** however, technically
 all domains are subdomains of their parents for example:  
 <br> 
 
-```mermaid!
-pie title Pets adopted by volunteers
-  "Dogs" : 386
-  "Cats" : 85
-  "Rats" : 35
-```
 
 ```
 (Third Level Domain)      (Second Level Domain)      (Top Level Domain)     (Root Domain)  
