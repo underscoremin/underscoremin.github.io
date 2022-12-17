@@ -2,7 +2,7 @@ function loadMermaid() {
   mermaid.init(
     {
       startOnLoad: true,
-      theme: 'default',
+      theme: 'monokai',
     },
     'pre code.language-mermaid',
   );

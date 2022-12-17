@@ -36,7 +36,9 @@ empty label, hence in this post I will represent a period by itself:
 <br> 
 ```mermaid
 flowchart TD
-    .
+    subgraph Root
+    n1(.)
+    end
 ```  
 <br> 
 
@@ -46,11 +48,16 @@ some examples are:
 <br> 
 ```mermaid
 flowchart TD
-    . --> .com
-    . --> .edu
-    . --> .org
-    . --> .net
-    . --> ...
+    subgraph Root
+    n1(.)
+    end
+    subgraph Top Level Domains
+    n1 --> n2(.com)
+    n1 --> n3(.edu)
+    n1 --> n4(.org)
+    n1 --> n5(.net)
+    n1 --> n6(...)
+    end
 ```   
 <br> 
 
@@ -61,16 +68,21 @@ example:
 <br> 
 ```mermaid
 flowchart TD
-    . --> .com
-    .com --> google.com
-    . --> .org
-    .org --> wikipedia.org
-    . --> .edu
-    . --> .net
-    . --> ...
+    subgraph Root
+        n1(.)
+    end
+    subgraph TLD [Top Level Domains]
+        n1 --> n2(.com)
+        n1 --> n4(.org)
+        n1 --> n6(...)
+    end
+    subgraph SLD [Second Level Domains]
+        n2 --> n7(google.com)
+        n2 --> n9(...)
+        n4 --> n8(wikipedia.org)
+        n4 --> n10(...)
+    end 
 ```   
-<br> 
-
 
 <br> 
 Underneath the Second Level Domains you have **Third Level Domains** . Third 
