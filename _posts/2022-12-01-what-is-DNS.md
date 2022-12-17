@@ -61,13 +61,10 @@ example:
 <br> 
 ```mermaid
 flowchart TD
-    . --> .com.
-    .com --> facebook.com
+    . --> .com
     .com --> google.com
-    .com --> youtube.com
     . --> .org
     .org --> wikipedia.org
-    .org --> wordpress.org
     . --> .edu
     . --> .net
     . --> ...
