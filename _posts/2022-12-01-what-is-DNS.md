@@ -46,9 +46,6 @@ a nameserver instead.
 <br>   
 
 ## Authoritative and Non-Authoritative Nameservers
-A nameserver isjjjjj}}}
-
-
 
 ## Constructing a Domain Name
 We identify a domain by its location in the DNS namespace tree. Starting from 
@@ -94,32 +91,31 @@ the trailing period on all domains is actually implied.
 At the top of the DNS namespace is the **Root Domain** and is identified by the 
 empty label.  
 <br> 
-
-```mermaid
+<div class="mermaid">
 flowchart TD
     subgraph Root
     n1(.)
     end
-```  
+</div>
 <br> 
 
 Underneath the root domains you have the **Top Level Domains** (**TLDs**), 
 some examples are:    
 <br> 
 
-```mermaid 
+<div class="mermaid"> 
 flowchart TD
     subgraph Root
-    n1(.)
+        n1(.)
     end
     subgraph Top Level Domains
-    n1 --> n2(.com)
-    n1 --> n3(.edu)
-    n1 --> n4(.org)
-    n1 --> n5(.net)
-    n1 --> n6(...)
+        n1 --> n2(.com)
+        n1 --> n3(.edu)
+        n1 --> n4(.org)
+        n1 --> n5(.net)
+        n1 --> n6(...)
     end
-```   
+</div>   
 <br> 
 
 Underneath the TLDs you have **Second Level Domains** (**SLDs**). These are
@@ -127,7 +123,7 @@ often the domain names individuals and companies buy to host their websites, for
 example:    
 <br> 
 
-```mermaid
+<div class="mermaid">
 flowchart TD
     subgraph Root
         n1(.)
@@ -143,7 +139,7 @@ flowchart TD
         n4 --> n8(wikipedia.org)
         n4 --> n10(...)
     end 
-```     
+</div>     
 <br> 
 
 Underneath the Second Level Domains you have **Third Level Domains** . Third 
@@ -152,7 +148,7 @@ all domains are subdomains of their parents. Some examples of third level
 domains are:    
 <br> 
 
-```mermaid
+<div class="mermaid">
 flowchart TD
     subgraph Root
         root(.)
@@ -170,7 +166,7 @@ flowchart TD
         google --> mail(mail.google.com)
         google --> ThirdLevelDomain...(...)
     end 
-```     
+</div>     
 <br> 
 
 ## DNS Zones
@@ -187,7 +183,7 @@ who did I delegate to manage the facebook.com domain" and so on.
 
 A simply diagram of what zones 
 
-```mermaid
+<div class="mermaid">
 flowchart TD
     subgraph Zone managed by ICANN
         root(.)
@@ -208,7 +204,7 @@ flowchart TD
             facebook --> f...(...)
         end 
     end
-```     
+</div>     
 <br> 
 
 ## Zone Files (Resource Records)
