@@ -1,9 +1,6 @@
-function loadMermaid() {
+const loadMermaid = () => {
   mermaid.init(
-    {
-      startOnLoad: true,
-      theme: 'monokai',
-    },
-    'pre code.language-mermaid',
+    'pre code.language-mermaid'
   );
 };
+
