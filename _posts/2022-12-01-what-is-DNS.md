@@ -42,10 +42,8 @@ except for the root domain which has no parent).
 Leaf domains (domains at the bottom of a branch in the DNS namespace) often have 
 a mapping to a IP address of a computer on the internet. Whereas domains in the 
 middle of the DNS namespace can either be a host as well or they could point to 
-a nameserver instead. 
+a nameserver instead.   
 <br>   
-
-## Authoritative and Non-Authoritative Nameservers
 
 ## Constructing a Domain Name
 We identify a domain by its location in the DNS namespace tree. Starting from 
@@ -72,29 +70,34 @@ represent the root).
 Deconstructing the FQDN 'www.example.com' into its position in the DNS namespace
 would look like so:      
 <br> 
+<div class="mermaid"> 
+flowchart TD
+    subgraph &nbsp&nbsproot domain&nbsp&nbsp
+        root(.)
+    end
+    root -- &nbspParent of '.com' Top Level Domain&nbsp --> com(.com.)
+    com -- &nbspParent of '.example' Second Level Domain&nbsp --> example(.example.com.)
+    example -- &nbspParent of 'www' subdomain&nbsp --> www(www.example.com.)
+    subgraph res [<br><br><br><br><br><br>&nbsp&nbspFully Qualified Domain Name&nbsp&nbsp]
+        www
+    end
 
-```
-Starting from the root domain:          .   
-Next we have the com domain:           .com.
-After we have the example domain:      .example.com. 
-Lastly we have the www domain          www.example.com. - Our domain
-```    
-<br> 
-
+    classDef result line-height:1;
+    class res result;
+</div>   
 You might notice that our resulting domain name above ends in a period. This is 
 true for all domains as they all branch off from the root. However because this 
 is common in every scenario, the need to write it has been made redundant and 
 the trailing period on all domains is actually implied.  
 <br> 
-
 ### DNS Tree Structure 
 At the top of the DNS namespace is the **Root Domain** and is identified by the 
 empty label.  
 <br> 
 <div class="mermaid">
-flowchart TD
+flowchart LR
     subgraph Root
-    n1(.)
+        root(.)
     end
 </div>
 <br> 
@@ -104,16 +107,16 @@ some examples are:
 <br> 
 
 <div class="mermaid"> 
-flowchart TD
+flowchart LR
     subgraph Root
-        n1(.)
+        root(.)
     end
-    subgraph Top Level Domains
-        n1 --> n2(.com)
-        n1 --> n3(.edu)
-        n1 --> n4(.org)
-        n1 --> n5(.net)
-        n1 --> n6(...)
+    subgraph TLD [&nbsp&nbspTop Level Domains&nbsp&nbsp]
+        root --> com(.com)
+        root --> edu(.edu)
+        root --> org(.org)
+        root --> net(.net)
+        root --> ...(...)
     end
 </div>   
 <br> 
@@ -124,20 +127,20 @@ example:
 <br> 
 
 <div class="mermaid">
-flowchart TD
+flowchart LR
     subgraph Root
-        n1(.)
+        root(.)
     end
-    subgraph TLD [Top Level Domains]
-        n1 --> n2(.com)
-        n1 --> n4(.org)
-        n1 --> n6(...)
+    subgraph TLD [&nbsp&nbspTop Level Domains&nbsp&nbsp]
+        root --> com(.com)
+        root --> org(.org)
+        root --> ...(...)
     end
     subgraph SLD [Second Level Domains]
-        n2 --> n7(google.com)
-        n2 --> n9(...)
-        n4 --> n8(wikipedia.org)
-        n4 --> n10(...)
+        com --> google(google.com)
+        com --> 2...(...)
+        org --> wiki(wikipedia.org)
+        org --> 3...(...)
     end 
 </div>     
 <br> 
@@ -149,19 +152,19 @@ domains are:
 <br> 
 
 <div class="mermaid">
-flowchart TD
+flowchart LR
     subgraph Root
         root(.)
     end
-    subgraph TLD [Top Level Domains]
+    subgraph TLD [&nbsp&nbspTop Level Domains&nbsp&nbsp]
         root --> com(.com)
         root --> TLD...(...)
     end
-    subgraph SLD [Second Level Domains]
+    subgraph SLD [&nbsp&nbspSecond Level Domains&nbsp&nbsp]
         com --> google(google.com)
         com --> SLD...(...)
     end 
-    subgraph ThLD [Third Level Domains]
+    subgraph ThLD [&nbsp&nbspThird Level Domains&nbsp&nbsp]
         google --> www(www.google.com)
         google --> mail(mail.google.com)
         google --> ThirdLevelDomain...(...)
@@ -189,17 +192,17 @@ flowchart TD
         root(.)
     end
     root --> com...(...)
-    subgraph .com domain
-        subgraph Zone managed by Verisign
+    subgraph .comDomain [<b>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp.com Domain</b>]
+        subgraph Zone &nbsp&nbsp&nbspmanaged &nbsp&nbsp&nbspby &nbsp&nbsp&nbspVerisign
             root --> com(.com)
         end
-        subgraph Zone managed by Google
-            com -- Delegated from Verisign --> google(google.com)
+        subgraph Zone &nbspmanaged &nbspby &nbspGoogle
+            com -- &nbspDelegated from Verisign&nbsp --> google(google.com)
             google --> gwww(www.google.com)
             google --> g...(...)
         end 
-        subgraph Zone managed by Facebook 
-            com -- Delegated from Verisign --> facebook(facebook.com)
+        subgraph Zone &nbsp&nbsp&nbspmanaged &nbsp&nbsp&nbspby &nbsp&nbsp&nbspFacebook 
+            com -- &nbspDelegated from Verisign&nbsp --> facebook(facebook.com)
             facebook --> fwww(www.facebook.com)
             facebook --> f...(...)
         end 
@@ -208,8 +211,6 @@ flowchart TD
 <br> 
 
 ## Zone Files (Resource Records)
-
-
 
 
 ## Converting a Domain Name to an IP - Step by Step 

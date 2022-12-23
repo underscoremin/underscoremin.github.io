@@ -33,10 +33,29 @@
 {% endif %}
 <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
 <script>
-    mermaid.initialize({
-        startOnLoad: true,
-        theme: "dark",
-    });
+    mermaid.initialize(
+        {
+            startOnLoad: true,
+            theme: "base",
+			'themeVariables': {
+				'primaryColor': '#ba91ed',
+			    'primaryTextColor': '#fff',
+			    'primaryBorderColor': '#2b0061',
+			    'lineColor': '#2b0061',
+			    'secondaryColor': '#f2e8ff',
+			    'tertiaryColor': '#f2e8ff',
+			    'tertiaryBorderColor': '#2b0061',
+                'darkMode': true,
+            },
+            flowchart: {
+                diagramPadding: 30,
+                rankSpacing: 80,
+                padding: 7,
+                useMaxWidth: true
+            }
+        }
+
+    );
 </script>
 {% if site.mathjax %}
 <script
