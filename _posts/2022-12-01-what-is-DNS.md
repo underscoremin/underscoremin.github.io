@@ -72,7 +72,7 @@ would look like so:
 <br> 
 <div class="mermaid"> 
 flowchart TD
-    subgraph &nbsp&nbsproot domain&nbsp&nbsp
+    subgraph &nbsp&nbspRoot Domain&nbsp&nbsp
         root(.)
     end
     root -- &nbspParent of '.com' Top Level Domain&nbsp --> com(.com.)
@@ -111,7 +111,7 @@ flowchart LR
     subgraph Root
         root(.)
     end
-    subgraph TLD [&nbsp&nbspTop Level Domains&nbsp&nbsp]
+    subgraph &nbsp&nbspTop Level Domains&nbsp&nbsp
         root --> com(.com)
         root --> edu(.edu)
         root --> org(.org)
@@ -191,18 +191,18 @@ flowchart TD
     subgraph Zone managed by ICANN
         root(.)
     end
-    root --> com...(...)
+    root-->com...(...)
     subgraph .comDomain [<b>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp.com Domain</b>]
         subgraph Zone &nbsp&nbsp&nbspmanaged &nbsp&nbsp&nbspby &nbsp&nbsp&nbspVerisign
             root --> com(.com)
         end
         subgraph Zone &nbspmanaged &nbspby &nbspGoogle
-            com -- &nbspDelegated from Verisign&nbsp --> google(google.com)
+            com --&nbspDelegated from Verisign&nbsp--> google(google.com)
             google --> gwww(www.google.com)
             google --> g...(...)
         end 
         subgraph Zone &nbsp&nbsp&nbspmanaged &nbsp&nbsp&nbspby &nbsp&nbsp&nbspFacebook 
-            com -- &nbspDelegated from Verisign&nbsp --> facebook(facebook.com)
+            com --&nbspDelegated from Verisign&nbsp--> facebook(facebook.com)
             facebook --> fwww(www.facebook.com)
             facebook --> f...(...)
         end 
