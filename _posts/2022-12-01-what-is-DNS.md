@@ -195,10 +195,10 @@ facebook.com domain" and so on for example:
 <div class="mermaid">
 flowchart TD
     subgraph Zone managed by ICANN
-        root(.)
+        root('')
     end
     root-->com...(...)
-    subgraph .comDomain [<b>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp.com Domain</b>]
+    subgraph .comDomain [.com Domain&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp]
         subgraph Zone &nbsp&nbsp&nbspmanaged &nbsp&nbsp&nbspby &nbsp&nbsp&nbspVerisign
             root --> com(.com)
         end
@@ -213,6 +213,9 @@ flowchart TD
             facebook --> f...(...)
         end 
     end
+
+    classDef domainClass font-weight:900;
+    class .comDomain domainClass;
 </div>     
 <br> 
 
