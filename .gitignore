@@ -10,3 +10,6 @@ Gemfile.lock
 
 # Mac OSX
 .DS_store
+
+# Private Files
+new-post-subjects.md

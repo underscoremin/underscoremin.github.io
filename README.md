@@ -1,4 +1,5 @@
-# underscoreminis
-https://underscoremin.github.io/underscoreminis/
+# Underscoremin
+https://underscoremin.github.io/
 
-# Mini security blog posts
+Mini Security Posts
+
