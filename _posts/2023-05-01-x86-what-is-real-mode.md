@@ -1,0 +1,31 @@
+---
+layout: post
+title: "x86 - Real Mode?"
+date: 2022-05-01
+categories: [x86]
+---
+
+Real mode is a mode of operation for x86 CPU's. Real mode is also called real 
+address mode, because all memory address references are to actual addresses in 
+hardware. This means all programs share one big address space; There is no 
+protection in place to prevent one program from accessing the memory of another
+program.   
+
+Real mode used to be the only mode of operation but now there is protected mode 
+which provides a virtual address space for each program.
+
+In real mode on the 8086 processor, you have 20 bit address space (1MB). This is 
+used collectively by all programs. The way you address memory is by a segmented
+addressing scheme in which you provide a 16bit segment number which gets 
+converted into the base address of the segment you want to address but left 
+shifting the value 4 bits adding 4 0s in the least significant 4 bytes of the 
+number. Then the 16bit offset value is added giving you an address in the 
+referenced segment. This actually allows for more than 20bits of addressable 
+memory so to cope with that, the value is taken to the modulo of 2^20 to wrap
+the address around to the beginning.  
+
+An example of this would be:   
+Code Segment (CS) register: 0xF11A  
+Offset: 0x3A   
+CS register left shift: 0xF11A0   
+Real Address: 0xF11A0+0x3A = 0xF11DA   
