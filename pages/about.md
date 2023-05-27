@@ -4,4 +4,6 @@ title: About
 permalink: /about/
 ---
 
-Underscoreminis are the mini blogs from underscoremin. 
+Underscoreminis are mini information security related posts. 
+<br>
+Check out the repo here: [UNDERSCOREMINIS](https://github.com/underscoremin/underscoremin.github.io)
