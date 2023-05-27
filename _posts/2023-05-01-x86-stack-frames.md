@@ -4,7 +4,7 @@ title: "x86 - Stack Frames"
 date: 2022-05-01
 categories: [x86]
 ---
-    
+<br>
 A stack frame is an designation of a segment of the process's stack for each 
 function that is called. It was designed this way so that each function can 
 execute without having to know it position in the process's stack. This is 
@@ -18,7 +18,7 @@ returning to the function that called function B (function A). The managing of
 the base address in the EBP register is done through the setup and tear down of 
 a functions stack frame (often referred to as the prologue and epilogue 
 respectively).    
-    
+<br>
 Another reason for functions to be handled this way is so that a function's 
 stack frame is always executed at the top of the stack and grows into new space. 
 This saves the function from having to track the size of it's own stack frame
