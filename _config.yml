@@ -5,8 +5,8 @@ description: >- # this means to ignore newlines until "baseurl:"
   Mini security posts. 
 keywords: [security]
 # the subpath of your site, e.g. /`blog
-baseurl: ''
-url: 'https://underscoremin.github.io' # the base hostname & protocol for your site, e.g. http://example.com
+baseurl: ""
+url: "" # the base hostname & protocol for your site, e.g. http://example.com
 # domain: 'github.io' # the domain name for your site, e.g. example.com
 language: en
 # Supported languages list:
