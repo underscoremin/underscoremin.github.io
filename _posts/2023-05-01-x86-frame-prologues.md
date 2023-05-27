@@ -11,7 +11,7 @@ function's base pointer so it can be restored later when this function is
 returning, as well as setting up the base pointer for this stack frame and 
 creating space for the functions local variables.   
 <br> 
-```assembly
+```
 ; x86 Stack Prologue Instruction
 
 push ebp        ; Save the calling function's base pointer on the stack to be 
