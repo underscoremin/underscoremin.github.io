@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "x86 - Base Pointers (Frame Pointers)"
+title: "Base Pointers (Frame Pointers)"
 date: 2022-05-01
 categories: [x86]
 ---

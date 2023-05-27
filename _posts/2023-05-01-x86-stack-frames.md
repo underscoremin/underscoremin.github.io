@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "x86 - Stack Frames"
+title: "Stack Frames"
 date: 2022-05-01
 categories: [x86]
 ---

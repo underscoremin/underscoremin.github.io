@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "x86 - Frame Prologues"
+title: "Stack Frame Prologues"
 date: 2022-05-01
 categories: [x86]
 ---

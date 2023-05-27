@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "x86 - 'leave' instruction"
+title: "'leave' Instruction"
 date: 2022-05-01
 categories: [x86]
 ---
