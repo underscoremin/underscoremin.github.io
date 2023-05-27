@@ -12,7 +12,7 @@ returning, as well as setting up the base pointer for this stack frame and
 creating space for the functions local variables.   
 <br> 
 ```asm
-; x86 Stack Epilogue Instruction
+; x86 Stack Prologue Instruction
 
 push ebp        ; Save the calling function's base pointer on the stack to be 
                 ; restored in this stack frames epilogue
