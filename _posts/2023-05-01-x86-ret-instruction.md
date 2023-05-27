@@ -10,7 +10,7 @@ The *ret* instruction is not a real instruction per say, it get converted to a
 This depends on where you are returning to in memory.   
 <br>    
 Generally speaking a *ret* will:    
-```asm
+```
 pop eip
 jmp eip
 ```    
