@@ -11,7 +11,7 @@ frame and restore the EBP register to contain the base pointer of the calling
 function which we are returning to.   
 <br> 
 Typically the epilogue will look like so:  
-```
+```assembly
 leave
 ret
 ```  
