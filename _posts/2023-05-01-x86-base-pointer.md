@@ -15,7 +15,7 @@ variables as an offset from the address in EBP.
 previous stack frame's base address. This is setup in the stack prologue when 
 you:  
 <br> 
-```assembly
+```
 push ebp
 mov ebp, esp
 ```  
