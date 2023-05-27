@@ -4,13 +4,13 @@ title: "x86 - 'leave' instruction"
 date: 2022-05-01
 categories: [x86]
 ---
-   
+<br> 
 The *leave* instruction is actually a combination of a few individual 
 instructions. Because the functionality provided by the atomic instructions 
 within leave are required so often, leave was introduced to reduce the space 
 taken up in the processor cache. The leave instruction is a combination of the 
 following:   
-   
+<br> 
 ```asm 
 ; *leave* instruction equivilent 
 
