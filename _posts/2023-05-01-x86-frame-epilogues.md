@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "x86 - Frame Epilogues"
+title: "Stack Frame Epilogues"
 date: 2022-05-01
 categories: [x86]
 ---

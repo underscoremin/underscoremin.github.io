@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "x86 - 'ret' instruction?"
+title: "'ret' Instruction"
 date: 2022-05-01
 categories: [x86]
 ---
