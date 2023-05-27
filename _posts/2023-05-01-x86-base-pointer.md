@@ -4,22 +4,22 @@ title: "x86 - Base Pointers (Frame Pointers)"
 date: 2022-05-01
 categories: [x86]
 ---
-
-The base pointer on the x86 architecture serves two purposes:
-
+  
+The base pointer on the x86 architecture serves two purposes:  
+  
 1) The address of the base pointer (stored in EBP) is a reference to the base of 
 the current stack frame, enabling you to access function arguments and local 
-variables as an offset from the address in EBP. 
-
+variables as an offset from the address in EBP.   
+  
 2) The **value** stored at the address EBP contains is the stack address of the 
 previous stack frame's base address. This is setup in the stack prologue when 
-you:
-
+you:  
+  
 ```asm
 push ebp
 mov ebp, esp
-```
-
+```  
+  
 If you look at the EBP register in GDB you will see that it looks like a list of 
 stack addresses. The base address for the current stack frame, holds the base 
 address of the previous stack frame which holds the base address of the stack 
@@ -30,4 +30,4 @@ to the same address, when we ```pop ebp``` we take the **value** of the address
 that ESP is pointing to i.e. The value at the address address of the base 
 pointer (the previous stack frame's base address) and we place it inside EBP 
 thus restoring EBP for the previous stack frame ready for us to return to the 
-calling function. 
+calling function.   

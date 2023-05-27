@@ -4,13 +4,13 @@ title: "x86 - Frame Prologues"
 date: 2022-05-01
 categories: [x86]
 ---
-
+   
 On the x86 architecture, stack frames begin with sequence of instructions often 
 labelled the 'prologue'. The prologue serves the purpose of storing the previous
 function's base pointer so it can be restored later when this function is 
 returning, as well as setting up the base pointer for this stack frame and 
-creating space for the functions local variables. 
-
+creating space for the functions local variables.   
+   
 ```asm
 ; x86 Stack Epilogue Instruction
 
@@ -28,4 +28,4 @@ sub esp, 0xX    ; Make room for local variables created in this function, on the
                 ; current size of this stack frame to be 0. Since the stack 
                 ; grows downards, we minus a value (X) from the current ESP 
                 ; location to create new space on the stack.  
-```
+```   
