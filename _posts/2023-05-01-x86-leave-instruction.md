@@ -11,7 +11,7 @@ within leave are required so often, leave was introduced to reduce the space
 taken up in the processor cache. The leave instruction is a combination of the 
 following:   
 <br> 
-```
+```nasm
 ; *leave* instruction equivilent 
 
 mov esp ebp     ; This is destroying the stack frame by moving the stack pointer 
