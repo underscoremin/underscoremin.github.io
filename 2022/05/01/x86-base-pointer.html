@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Base Pointers (Frame Pointers) | underscoremin</title>
+<meta name="generator" content="Jekyll v3.9.3" />
+<meta property="og:title" content="Base Pointers (Frame Pointers)" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="The base pointer on the x86 architecture serves two purposes: 1) The address of the base pointer (stored in EBP) is a reference to the base of the current stack frame, enabling you to access function arguments and local variables as an offset from the address in EBP. 2) The value stored at the address EBP contains is the stack address of the previous stack frame’s base address. This is setup in the stack prologue when you: ```nasm ; Snippet of the stack prologue - Intel Syntax" />
+<meta property="og:description" content="The base pointer on the x86 architecture serves two purposes: 1) The address of the base pointer (stored in EBP) is a reference to the base of the current stack frame, enabling you to access function arguments and local variables as an offset from the address in EBP. 2) The value stored at the address EBP contains is the stack address of the previous stack frame’s base address. This is setup in the stack prologue when you: ```nasm ; Snippet of the stack prologue - Intel Syntax" />
+<link rel="canonical" href="/2022/05/01/x86-base-pointer" />
+<meta property="og:url" content="/2022/05/01/x86-base-pointer" />
+<meta property="og:site_name" content="underscoremin" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-05-01T00:00:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Base Pointers (Frame Pointers)" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-05-01T00:00:00+00:00","datePublished":"2022-05-01T00:00:00+00:00","description":"The base pointer on the x86 architecture serves two purposes: 1) The address of the base pointer (stored in EBP) is a reference to the base of the current stack frame, enabling you to access function arguments and local variables as an offset from the address in EBP. 2) The value stored at the address EBP contains is the stack address of the previous stack frame’s base address. This is setup in the stack prologue when you: ```nasm ; Snippet of the stack prologue - Intel Syntax","headline":"Base Pointers (Frame Pointers)","mainEntityOfPage":{"@type":"WebPage","@id":"/2022/05/01/x86-base-pointer"},"url":"/2022/05/01/x86-base-pointer"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+<meta
+  name="keywords"
+  content="" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" href="/favicon.ico" />
+<link
+  rel="alternate"
+  type="application/rss+xml"
+  title="underscoremin - Mini security posts. "
+  href="/feed.xml" />
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="/assets/css/base.css" />
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="/assets/css/highlight.css" />
+
+<!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+    mermaid.initialize(
+        {
+            startOnLoad: true,
+            theme: "base",
+			'themeVariables': {
+				'primaryColor': '#ba91ed',
+			    'primaryTextColor': '#fff',
+			    'primaryBorderColor': '#2b0061',
+			    'lineColor': '#2b0061',
+			    'secondaryColor': '#eae4ef',
+			    'tertiaryColor': '#f2e8ff',
+			    'tertiaryBorderColor': '#2b0061',
+                'darkMode': true,
+            },
+            flowchart: {
+                diagramPadding: 30,
+                rankSpacing: 100,
+                padding: 7,
+                useMaxWidth: true
+            }
+        }
+
+    );
+</script>
+
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"
+  async>
+</script>
+
+
+
+  </head>
+  <body>
+    <div class="container-wrapper">
+      <header class="container-header">
+        <div class="header-info">
+  <span class="header-info-name">underscoremin</span>
+  <span class="header-info-desc">Mini security posts. </span>
+</div>
+<nav class="header-nav">
+  <ul class="header-main-nav">
+    
+    <li class="header-main-nav-item">
+      <a href="/">
+        
+          Index
+        
+      </a>
+    </li>
+    
+    <li class="header-main-nav-item">
+      <a href="/categories">
+        
+          Categories
+        
+      </a>
+    </li>
+    
+    <li class="header-main-nav-item">
+      <a href="/about">
+        
+          About
+        
+      </a>
+    </li>
+    
+  </ul>
+</nav>
+
+      </header>
+      <main class="container-main">
+        <article class="container-post">
+  <div class="post-title">
+    <h1>Base Pointers (Frame Pointers)</h1>
+  </div>
+  
+  <div class="post-author print-post-author">
+    <span>_min</span>
+  </div>
+  
+  <div class="post-content">
+    <p><br /> 
+The base pointer on the x86 architecture serves two purposes:<br />
+<br /> 
+1) The address of the base pointer (stored in EBP) is a reference to the base of 
+the current <a href="/2022/05/01/x86-stack-frames">stack frame</a>, enabling 
+you to access function arguments and local variables as an offset from the 
+address in EBP. <br />
+<br /> 
+2) The <strong>value</strong> stored at the address EBP contains is the stack address of the 
+previous stack frame’s base address. This is setup in the 
+<a href="/2022/05/01/x86-frame-prologues">stack prologue</a> when you:<br />
+<br /></p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">; Snippet of the stack prologue - Intel Syntax </span>
+
+<span class="nf">push</span> <span class="nb">ebp</span>        <span class="c1">; Store the calling functions base pointer on the stack, often</span>
+                <span class="c1">; referred to as the 'Saved Frame Pointer (SFP)'</span>
+
+<span class="nf">mov</span> <span class="nb">ebp</span><span class="p">,</span> <span class="nb">esp</span>    <span class="c1">; Set the base pointer for the function that was just entered</span>
+                <span class="c1">; by setting it equal to the top of the stack. </span>
+</code></pre></div></div>
+<p><br /> 
+If you look at the EBP register in GDB you will see that it looks like a list of 
+stack addresses. The base address for the current stack frame, holds the base 
+address of the previous stack frame which holds the base address of the stack 
+frame before that and so on. At the point in time when we <em>pop ebp</em> in the 
+<a href="/2022/05/01/x86-frame-epilogues">epilogue</a>, the top of the stack 
+will point to the base of the current stack frame (thanks to the instruction 
+just prior to this one), i.e. ESP and EBP will point to the same address, when 
+we <em>pop ebp</em> we take the <strong>value</strong> of the address that ESP is pointing to i.e. 
+The value at the address address of the base pointer (the previous stack frame’s 
+base address) and we place it inside EBP thus restoring EBP for the previous 
+stack frame ready for us to return to the calling function.</p>
+
+  </div>
+  <div class="post-info">
+    <div class="post-date">
+      Written on 
+      2022-05-01
+      
+      .
+    </div>
+    
+    <div class="post-author">
+      Author: _min
+    </div>
+    
+    <div class="post-categories">
+      <span>Categories: </span>
+      
+      <a 
+        href="/categories#x86"
+        class="post-category">
+        x86
+      </a>
+      
+    </div>
+    <div class="post-tags">
+      <span>Tags: </span>
+      
+    </div>
+    <div class="post-other">
+      
+      <div>
+        <span>
+          Next: 
+        </span>
+        <a href="/2022/05/01/x86-frame-epilogues">
+          Stack Frame Epilogues
+        </a>
+      </div>
+      
+      
+    </div>
+    
+  </div>
+</article>
+
+      </main>
+      <footer class="container-footer">
+        <div class="footer-copyright">
+  <span class="footer-copyright-text float-left">
+  </span>
+</div>
+
+      </footer>
+    </div>
+  </body>
+</html>

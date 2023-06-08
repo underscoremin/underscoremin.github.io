@@ -1,0 +1,686 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2023-06-08T22:04:49+00:00</updated><id>/feed.xml</id><title type="html">underscoremin</title><subtitle>Mini security posts. </subtitle><entry><title type="html">What is DNS</title><link href="/2022/12/01/what-is-DNS" rel="alternate" type="text/html" title="What is DNS" /><published>2022-12-01T00:00:00+00:00</published><updated>2022-12-01T00:00:00+00:00</updated><id>/2022/12/01/what-is-DNS</id><content type="html" xml:base="/2022/12/01/what-is-DNS">&lt;p&gt;&lt;br /&gt; 
+&lt;strong&gt;Domain Name System&lt;/strong&gt; (&lt;strong&gt;DNS&lt;/strong&gt;) is the system computers use to convert &lt;strong&gt;Domain 
+Names&lt;/strong&gt; e.g. &lt;em&gt;www.example.com&lt;/em&gt; into IP addresses. DNS gets used throughout many 
+common computer activities, however, &lt;em&gt;you&lt;/em&gt; are likely to invoke it the most by 
+browsing the web. More often than not you browse to a website not using its IP 
+address but instead a readable domain name. It is not clear to a computer where 
+on the internet to look for that domain name, so it must first be converted to 
+an IP address using DNS.&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;why-dns&quot;&gt;Why DNS&lt;/h2&gt;
+&lt;p&gt;Computers on the internet – more specifically &lt;strong&gt;Internet Protocol&lt;/strong&gt; (&lt;strong&gt;IP&lt;/strong&gt;) 
+networks – identify themselves with IP addresses. To access other computers on 
+the internet, you need to know what their IP address is. However, IP addresses 
+are hard to read and harder to remember, but domain names offer a human friendly 
+way to reference a destination on the internet instead. This might be better for 
+us, but computers still communicate to each other using their IPs. Hence, the 
+reason why we need DNS.&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;domain-name-system-layout&quot;&gt;Domain Name System Layout&lt;/h2&gt;
+&lt;p&gt;The Domain Name System can be described as a &lt;strong&gt;Namespace&lt;/strong&gt;:&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;A namespace is a context within which the names of all objects must be 
+unambiguously resolvable. For example, the internet is a single DNS namespace.&lt;/p&gt;
+
+  &lt;p&gt;– &lt;cite&gt;https://learn.microsoft.com/en-us/windows/win32/dns/name-space&lt;/cite&gt;   &lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The DNS namespace has a hierarchical tree like structure of &lt;strong&gt;Domains&lt;/strong&gt;. A 
+domain is any subsection of the whole DNS namespace (it too will also be 
+classified as a namespace). Each domain has a label that corresponds to it. &lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;domains-vs-domain-names&quot;&gt;Domains vs Domain Names&lt;/h3&gt;
+&lt;p&gt;As mentioned above a domain is any subset of the whole DNS namespace, whereas a
+domain name is a period (‘.’) separated label of domains. The domain name 
+describes the position of the domain in the DNS namespace starting from the Root
+domain (which is at the top of the namespace). ‘&lt;em&gt;www.example.com&lt;/em&gt;’ is a domain 
+name, and ‘&lt;em&gt;www&lt;/em&gt;’, ‘&lt;em&gt;example&lt;/em&gt;’, ‘&lt;em&gt;com&lt;/em&gt;’ are all domains.&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;hierarchical-structure&quot;&gt;Hierarchical Structure&lt;/h3&gt;
+&lt;p&gt;At the top of the DNS namespace is the &lt;strong&gt;Root Domain&lt;/strong&gt; and it is identified by a 
+null/empty label. Because empty labels could be confusing to readers, the root 
+domain is often instead represented by a single period ‘.’. It is meant to 
+represent the period that separates the domains in a domain name, however I 
+think that causes more confusion so instead I will represent the Root domain by 
+a empty pair of single quotes: ‘’. 
+&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;mermaid&quot;&gt;
+flowchart LR
+    subgraph rootDomain [&amp;amp;nbsp&amp;amp;nbspRoot Domain&amp;amp;nbsp&amp;amp;nbsp]
+        root('')
+    end
+&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;Underneath the root domain you have the &lt;strong&gt;Top Level Domains&lt;/strong&gt; (&lt;strong&gt;TLDs&lt;/strong&gt;), 
+some examples are:  &lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;div class=&quot;mermaid&quot;&gt; 
+flowchart RL
+    subgraph Root Domain
+        root('')
+    end
+    subgraph &amp;amp;nbsp&amp;amp;nbspTop Level Domains&amp;amp;nbsp&amp;amp;nbsp
+        root -- &amp;amp;nbsp.&amp;amp;nbsp --&amp;gt; com(com)
+        root -- &amp;amp;nbsp.&amp;amp;nbsp --&amp;gt; edu(edu)
+        root -- &amp;amp;nbsp.&amp;amp;nbsp --&amp;gt; org(org)
+        root -- &amp;amp;nbsp.&amp;amp;nbsp --&amp;gt; net(net)
+        root --&amp;gt; ...(...)
+    end
+&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;Underneath the TLDs you have &lt;strong&gt;Second Level Domains&lt;/strong&gt; (&lt;strong&gt;SLDs&lt;/strong&gt;). These are
+often the domains individuals and companies buy to host their websites or other
+resources, for example:  &lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;div class=&quot;mermaid&quot;&gt;
+flowchart RL
+    subgraph Root
+        root('')
+    end
+    subgraph TLD [&amp;amp;nbsp&amp;amp;nbspTop Level Domains&amp;amp;nbsp&amp;amp;nbsp]
+        root -- &amp;amp;nbsp.&amp;amp;nbsp --&amp;gt; com(com)
+        root -- &amp;amp;nbsp.&amp;amp;nbsp --&amp;gt; org(org)
+        root --&amp;gt; ...(...)
+    end
+    subgraph SLD [&amp;amp;nbsp&amp;amp;nbspSecond Level Domains&amp;amp;nbsp&amp;amp;nbsp]
+        com -- &amp;amp;nbsp.&amp;amp;nbsp --&amp;gt; google(google)
+        com --&amp;gt; 2...(...)
+        org -- &amp;amp;nbsp.&amp;amp;nbsp --&amp;gt; wiki(wikipedia)
+        org --&amp;gt; 3...(...)
+    end 
+&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;Underneath the Second Level Domains you have &lt;strong&gt;Third Level Domains&lt;/strong&gt;. Third 
+Level domains are commonly referred to as &lt;strong&gt;subdomains&lt;/strong&gt; however, technically 
+all domains are subdomains of their parent (except the Root domain because it
+has no parent). Some examples of third level 
+domains are:  &lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;div class=&quot;mermaid&quot;&gt;
+flowchart RL
+    subgraph Root
+        root('')
+    end
+    subgraph TLD [&amp;amp;nbsp&amp;amp;nbspTop Level Domains&amp;amp;nbsp&amp;amp;nbsp]
+        root -- &amp;amp;nbsp.&amp;amp;nbsp --&amp;gt; com(com)
+        root --&amp;gt; TLD...(...)
+    end
+    subgraph SLD [&amp;amp;nbsp&amp;amp;nbspSecond Level Domains&amp;amp;nbsp&amp;amp;nbsp]
+        com -- &amp;amp;nbsp.&amp;amp;nbsp --&amp;gt; google(google)
+        com --&amp;gt; SLD...(...)
+    end 
+    subgraph ThLD [&amp;amp;nbsp&amp;amp;nbspThird Level Domains&amp;amp;nbsp&amp;amp;nbsp]
+        google -- &amp;amp;nbsp.&amp;amp;nbsp --&amp;gt; www(www)
+        google -- &amp;amp;nbsp.&amp;amp;nbsp --&amp;gt; mail(mail)
+        google --&amp;gt; ThirdLevelDomain...(...)
+    end 
+&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;constructing-a-domain-name&quot;&gt;Constructing a Domain Name&lt;/h2&gt;
+&lt;p&gt;A domain name is a description of a domains location inside the DNS namespace 
+tree. Starting from the root of the tree (the Root Domain) each child domain 
+will have a domain name that is constructed of &amp;lt;its own domain name&amp;gt;.&amp;lt;domain 
+name of its parent&amp;gt;.&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;The full path of a domain from the root of the DNS name space is called a 
+&lt;strong&gt;Fully Qualified Domain Name&lt;/strong&gt; (&lt;strong&gt;FQDN&lt;/strong&gt;) whereas a &lt;strong&gt;Partially Qualified 
+Domain Name&lt;/strong&gt; (&lt;strong&gt;PQDN&lt;/strong&gt;) aka &lt;strong&gt;Relative Domain Name&lt;/strong&gt; is a subset of a FQDN. 
+PQDNs are commonly used to specify just the host e.g example.com whereas the 
+FQDN is required when actually 
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;Deconstructing the FQDN ‘www.example.com.’ into its position in the DNS 
+namespace would look like so:    &lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;mermaid&quot;&gt; 
+flowchart TD
+    subgraph &amp;amp;nbsp&amp;amp;nbspRoot Domain&amp;amp;nbsp&amp;amp;nbsp
+        root('')
+    end
+    root -- &amp;amp;nbspParent of '.com' Top Level Domain&amp;amp;nbsp --&amp;gt; com(.com.'')
+    com -- &amp;amp;nbspParent of '.example' Second Level Domain&amp;amp;nbsp --&amp;gt; example(.example.com.'')
+    example -- &amp;amp;nbspParent of 'www' subdomain&amp;amp;nbsp --&amp;gt; www(www.example.com.'')
+    subgraph res [&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&amp;amp;nbsp&amp;amp;nbspFully Qualified Domain Name&amp;amp;nbsp&amp;amp;nbsp]
+        www
+    end
+
+    classDef result line-height:1;
+    class res result;
+&lt;/div&gt;
+&lt;p&gt;You might notice that our resulting domain name above ends in a period (followed
+by an empty string representing the root domain). This is true for all domains 
+as they all branch off from the root. However because this is common in every 
+scenario, the need to write the trailing period has been made redundant and on 
+all domains it’s implied.&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;where-is-domain-information-stored&quot;&gt;Where is Domain Information Stored&lt;/h2&gt;
+&lt;p&gt;As you might have guessed domains can be quite large. Take the ‘.com’ TLD for 
+example, it is comprised of every website in the world that ends with ‘.com’. It
+would be very difficult for one organisation to manage all subdomains of the 
+‘.com’ domain. This is why domains can &lt;strong&gt;Delegate&lt;/strong&gt; the management of some of 
+its subdomains to the individuals or organisation creating those subdomains. 
+These subdomains often then become one or more &lt;strong&gt;DNS Zones&lt;/strong&gt;. &lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;dns-zones&quot;&gt;DNS Zones&lt;/h3&gt;
+&lt;p&gt;A DNS zone is a subsection of the DNS namespace that is managed by one entity. 
+The difference between a zone and a domain is that it’s possible for a whole 
+domain to be a zone (in that scenario they would be synonymous) but it’s also 
+possible for a single domain to be comprised of many zones and this often 
+happens with the higher level domains like the ‘.com’ domain example above. The 
+‘.com’ domain will delegate the management of most of its subdomains leaving it 
+to manage mostly delegation information like “who did I delegate to manage the 
+facebook.com domain” and so on for example:  &lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;div class=&quot;mermaid&quot;&gt;
+flowchart TD
+    subgraph Zone managed by ICANN
+        root('')
+    end
+    root--&amp;gt;com...(...)
+    subgraph .comDomain [.com Domain&amp;amp;nbsp&amp;amp;nbsp&amp;amp;nbsp&amp;amp;nbsp&amp;amp;nbsp&amp;amp;nbsp&amp;amp;nbsp&amp;amp;nbsp&amp;amp;nbsp]
+        subgraph Zone &amp;amp;nbsp&amp;amp;nbsp&amp;amp;nbspmanaged &amp;amp;nbsp&amp;amp;nbsp&amp;amp;nbspby &amp;amp;nbsp&amp;amp;nbsp&amp;amp;nbspVerisign
+            root --&amp;gt; com(.com)
+        end
+        subgraph Zone &amp;amp;nbspmanaged &amp;amp;nbspby &amp;amp;nbspGoogle
+            com --&amp;amp;nbspDelegated from Verisign&amp;amp;nbsp--&amp;gt; google(google.com)
+            google --&amp;gt; gwww(www.google.com)
+            google --&amp;gt; g...(...)
+        end 
+        subgraph Zone &amp;amp;nbsp&amp;amp;nbsp&amp;amp;nbspmanaged &amp;amp;nbsp&amp;amp;nbsp&amp;amp;nbspby &amp;amp;nbsp&amp;amp;nbsp&amp;amp;nbspFacebook 
+            com --&amp;amp;nbspDelegated from Verisign&amp;amp;nbsp--&amp;gt; facebook(facebook.com)
+            facebook --&amp;gt; fwww(www.facebook.com)
+            facebook --&amp;gt; f...(...)
+        end 
+    end
+
+    classDef domainClass font-weight:900;
+    class .comDomain domainClass;
+&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;dns-nameservers-and-resource-records-zone-files&quot;&gt;DNS Nameservers and Resource Records (Zone Files)&lt;/h3&gt;
+&lt;p&gt;Information about zones are stored in &lt;strong&gt;Nameservers&lt;/strong&gt;. Nameservers are servers
+that are responsible for holding &lt;strong&gt;Resource Records&lt;/strong&gt; (&lt;strong&gt;RRs&lt;/strong&gt;) aka &lt;strong&gt;Zone 
+Files&lt;/strong&gt; for a particular zone. RRs are divided up into classes, the only of 
+which that holds much relevance today is the &lt;strong&gt;Internet&lt;/strong&gt; class. For the 
+internet class you have several types of RRs, each type of record holds 
+different information about the zone. &lt;em&gt;Some&lt;/em&gt; of the most common records are:&lt;/p&gt;
+&lt;div class=&quot;mermaid&quot;&gt;
+flowchart TB
+    subgraph &amp;amp;nbsp&amp;amp;nbspCNAME Record&amp;amp;nbsp&amp;amp;nbsp
+        CNAME(CNAME)
+    end
+    subgraph &amp;amp;nbsp&amp;amp;nbspMX Record&amp;amp;nbsp&amp;amp;nbsp
+        MX(MX)
+    end
+    subgraph &amp;amp;nbsp&amp;amp;nbspAAAA Record&amp;amp;nbsp&amp;amp;nbsp
+        AAAA(AAAA)
+    end
+    subgraph &amp;amp;nbsp&amp;amp;nbspA Record&amp;amp;nbsp&amp;amp;nbsp
+        A(A)
+    end
+&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;u&gt;A Record&lt;/u&gt;&lt;/strong&gt;: Converts a domain name to an IPv4 address.&lt;br /&gt;
+&lt;br /&gt; 
+&lt;strong&gt;&lt;u&gt;AAAA Record&lt;/u&gt;&lt;/strong&gt;: Converts a domain name to an IPv6 address.&lt;br /&gt;
+&lt;br /&gt; 
+&lt;strong&gt;&lt;u&gt;MX Record&lt;/u&gt;&lt;/strong&gt;: Identifies the mail server for a email recipient.  &lt;br /&gt;
+&lt;br /&gt; 
+&lt;strong&gt;&lt;u&gt;CNAME Record&lt;/u&gt;&lt;/strong&gt;: &lt;strong&gt;CNAME&lt;/strong&gt; aka &lt;strong&gt;Canonical Name&lt;/strong&gt; converts a domain name 
+to another domain name. This is sometimes required because domain names can be
+setup to act like an alias. This can repeat multiple times until you eventually
+reach a domain name that resolves to an IP address for example:  &lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;div class=&quot;mermaid&quot;&gt;
+flowchart LR
+    fb(www.facebook.com) -- &amp;amp;nbsp&amp;amp;nbspCNAME Record&amp;amp;nbsp&amp;amp;nbsp --&amp;gt; star(star-mini.c10r.facebook.com)  
+    star -- &amp;amp;nbsp&amp;amp;nbspA Record&amp;amp;nbsp&amp;amp;nbsp --&amp;gt; ip(157.240.19.35)
+&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;authoritative-nameservers&quot;&gt;Authoritative Nameservers&lt;/h3&gt;
+&lt;p&gt;Authoritative nameservers are nameservers that have all the resource records for 
+a zone. A zone can have multiple nameservers, some of which may only contain 
+some of the total resource records for a zone, these are just called 
+nameservers. Authoritative nameservers are what are queried for resource records 
+in the domain name resolution process. &lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;Leaf domains (domains at the bottom of a branch in the DNS namespace) often have 
+a mapping to a IP address of a computer on the internet. Whereas domains in the 
+middle of the DNS namespace can either be a host as well or they could just 
+manage the information about their own domain through the use of nameservers. &lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;</content><author><name></name></author><category term="DNS" /><summary type="html">Domain Name System (DNS) is the system computers use to convert Domain Names e.g. www.example.com into IP addresses. DNS gets used throughout many common computer activities, however, you are likely to invoke it the most by browsing the web. More often than not you browse to a website not using its IP address but instead a readable domain name. It is not clear to a computer where on the internet to look for that domain name, so it must first be converted to an IP address using DNS.</summary></entry><entry><title type="html">Base Pointers (Frame Pointers)</title><link href="/2022/05/01/x86-base-pointer" rel="alternate" type="text/html" title="Base Pointers (Frame Pointers)" /><published>2022-05-01T00:00:00+00:00</published><updated>2022-05-01T00:00:00+00:00</updated><id>/2022/05/01/x86-base-pointer</id><content type="html" xml:base="/2022/05/01/x86-base-pointer">&lt;p&gt;&lt;br /&gt; 
+The base pointer on the x86 architecture serves two purposes:&lt;br /&gt;
+&lt;br /&gt; 
+1) The address of the base pointer (stored in EBP) is a reference to the base of 
+the current &lt;a href=&quot;/2022/05/01/x86-stack-frames&quot;&gt;stack frame&lt;/a&gt;, enabling 
+you to access function arguments and local variables as an offset from the 
+address in EBP. &lt;br /&gt;
+&lt;br /&gt; 
+2) The &lt;strong&gt;value&lt;/strong&gt; stored at the address EBP contains is the stack address of the 
+previous stack frame’s base address. This is setup in the 
+&lt;a href=&quot;/2022/05/01/x86-frame-prologues&quot;&gt;stack prologue&lt;/a&gt; when you:&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-nasm highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;; Snippet of the stack prologue - Intel Syntax &lt;/span&gt;
+
+&lt;span class=&quot;nf&quot;&gt;push&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;ebp&lt;/span&gt;        &lt;span class=&quot;c1&quot;&gt;; Store the calling functions base pointer on the stack, often&lt;/span&gt;
+                &lt;span class=&quot;c1&quot;&gt;; referred to as the 'Saved Frame Pointer (SFP)'&lt;/span&gt;
+
+&lt;span class=&quot;nf&quot;&gt;mov&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;ebp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;esp&lt;/span&gt;    &lt;span class=&quot;c1&quot;&gt;; Set the base pointer for the function that was just entered&lt;/span&gt;
+                &lt;span class=&quot;c1&quot;&gt;; by setting it equal to the top of the stack. &lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt; 
+If you look at the EBP register in GDB you will see that it looks like a list of 
+stack addresses. The base address for the current stack frame, holds the base 
+address of the previous stack frame which holds the base address of the stack 
+frame before that and so on. At the point in time when we &lt;em&gt;pop ebp&lt;/em&gt; in the 
+&lt;a href=&quot;/2022/05/01/x86-frame-epilogues&quot;&gt;epilogue&lt;/a&gt;, the top of the stack 
+will point to the base of the current stack frame (thanks to the instruction 
+just prior to this one), i.e. ESP and EBP will point to the same address, when 
+we &lt;em&gt;pop ebp&lt;/em&gt; we take the &lt;strong&gt;value&lt;/strong&gt; of the address that ESP is pointing to i.e. 
+The value at the address address of the base pointer (the previous stack frame’s 
+base address) and we place it inside EBP thus restoring EBP for the previous 
+stack frame ready for us to return to the calling function.&lt;/p&gt;</content><author><name></name></author><category term="x86" /><summary type="html">The base pointer on the x86 architecture serves two purposes: 1) The address of the base pointer (stored in EBP) is a reference to the base of the current stack frame, enabling you to access function arguments and local variables as an offset from the address in EBP. 2) The value stored at the address EBP contains is the stack address of the previous stack frame’s base address. This is setup in the stack prologue when you: ```nasm ; Snippet of the stack prologue - Intel Syntax</summary></entry><entry><title type="html">Stack Frame Epilogues</title><link href="/2022/05/01/x86-frame-epilogues" rel="alternate" type="text/html" title="Stack Frame Epilogues" /><published>2022-05-01T00:00:00+00:00</published><updated>2022-05-01T00:00:00+00:00</updated><id>/2022/05/01/x86-frame-epilogues</id><content type="html" xml:base="/2022/05/01/x86-frame-epilogues">&lt;p&gt;&lt;br /&gt; 
+On the x86 architecture, 
+&lt;a href=&quot;/2022/05/01/x86-stack-frames&quot;&gt;stack frames&lt;/a&gt; end with sequence of 
+instructions inserted into the binary by the compiler, often referred to as the 
+&lt;em&gt;epilogue&lt;/em&gt;. The epilogue serves the purpose of:&lt;br /&gt;
+&lt;br /&gt;
+1) Destroying the stack frame for the returning function,&lt;br /&gt;
+2) Restoring the EBP register to contain the 
+&lt;a href=&quot;/2022/05/01/x86-base-pointer&quot;&gt;base pointer&lt;/a&gt; of the calling 
+function which we are returning to. &lt;br /&gt;
+&lt;br /&gt; 
+Typically the epilogue will look like so:&lt;/p&gt;
+&lt;div class=&quot;language-nasm highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;; x86 Stack Frame Epilogue - Intel Syntax&lt;/span&gt;
+
+&lt;span class=&quot;nf&quot;&gt;leave&lt;/span&gt;
+&lt;span class=&quot;nf&quot;&gt;ret&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt; 
+The &lt;a href=&quot;/2022/05/01/x86-leave-instruction&quot;&gt;leave&lt;/a&gt; instruction will 
+tear down the stack frame and restore the saved frame pointer to get ready to 
+return to the calling function. The 
+&lt;a href=&quot;/2022/05/01/x86-ret-instruction&quot;&gt;ret&lt;/a&gt; instruction will continue 
+execution back to the &lt;em&gt;return address&lt;/em&gt; which is now located at the top of the 
+stack (i.e. ESP is pointing to the return address) and was placed there during 
+the original &lt;em&gt;call&lt;/em&gt; instruction to the function we are about to exit.&lt;/p&gt;</content><author><name></name></author><category term="x86" /><summary type="html">On the x86 architecture, stack frames end with sequence of instructions inserted into the binary by the compiler, often referred to as the epilogue. The epilogue serves the purpose of: 1) Destroying the stack frame for the returning function, 2) Restoring the EBP register to contain the base pointer of the calling function which we are returning to. Typically the epilogue will look like so: ```nasm ; x86 Stack Frame Epilogue - Intel Syntax</summary></entry><entry><title type="html">Stack Frame Prologues</title><link href="/2022/05/01/x86-frame-prologues" rel="alternate" type="text/html" title="Stack Frame Prologues" /><published>2022-05-01T00:00:00+00:00</published><updated>2022-05-01T00:00:00+00:00</updated><id>/2022/05/01/x86-frame-prologues</id><content type="html" xml:base="/2022/05/01/x86-frame-prologues">&lt;p&gt;&lt;br /&gt; 
+On the x86 architecture, 
+&lt;a href=&quot;/2022/05/01/x86-stack-frames&quot;&gt;stack frames&lt;/a&gt; begin with sequence 
+of instructions often referred to as the &lt;em&gt;prologue&lt;/em&gt;. The prologue is inserted by 
+the compiler into the binary to manage various information required to perform a 
+function call. The prologue on x86 serves the purpose of:
+&lt;br /&gt;&lt;br /&gt;
+1) Storing the previous function’s 
+&lt;a href=&quot;/2022/05/01/x86-base-pointer&quot;&gt;base pointer&lt;/a&gt; so it can be restored 
+later when this function is returning,&lt;/p&gt;
+
+&lt;p&gt;2) Setting up the base pointer for this stack frame,&lt;/p&gt;
+
+&lt;p&gt;3) Creating space on the stack for the functions local variables. &lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-nasm highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;; x86 Stack Prologue Instruction - Intel Syntax&lt;/span&gt;
+
+&lt;span class=&quot;nf&quot;&gt;push&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;ebp&lt;/span&gt;        &lt;span class=&quot;c1&quot;&gt;; Save the calling function's base pointer on the stack to be &lt;/span&gt;
+                &lt;span class=&quot;c1&quot;&gt;; restored in this stack frames epilogue&lt;/span&gt;
+
+&lt;span class=&quot;nf&quot;&gt;mov&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;ebp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;esp&lt;/span&gt;    &lt;span class=&quot;c1&quot;&gt;; Setup the current stack frames base pointer. It is set to &lt;/span&gt;
+                &lt;span class=&quot;c1&quot;&gt;; the value of ESP because ESP points to the top of the stack&lt;/span&gt;
+                &lt;span class=&quot;c1&quot;&gt;; and the top of the stack is where we will begin to create &lt;/span&gt;
+                &lt;span class=&quot;c1&quot;&gt;; our new stack frame for the currently executing function&lt;/span&gt;
+
+&lt;span class=&quot;nf&quot;&gt;sub&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;esp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x8&lt;/span&gt;    &lt;span class=&quot;c1&quot;&gt;; Make room for this function's local variables on the stack. &lt;/span&gt;
+                &lt;span class=&quot;c1&quot;&gt;; Before executing this instruction, the base pointer (EBP) and &lt;/span&gt;
+                &lt;span class=&quot;c1&quot;&gt;; the stack pointer (ESP) point to the same thing, hence you can &lt;/span&gt;
+                &lt;span class=&quot;c1&quot;&gt;; consider the current size of this stack frame to be 0. Since &lt;/span&gt;
+                &lt;span class=&quot;c1&quot;&gt;; the stack grows downards, we minus a value (in this case I &lt;/span&gt;
+                &lt;span class=&quot;c1&quot;&gt;; chose 0x8 at random) from the current ESP location to create &lt;/span&gt;
+                &lt;span class=&quot;c1&quot;&gt;; new space on the stack for local function variables. In this &lt;/span&gt;
+                &lt;span class=&quot;c1&quot;&gt;; example you might have 2 variables each of size 0x4 bytes or&lt;/span&gt;
+                &lt;span class=&quot;c1&quot;&gt;; you may have one variable with a size of 0x8 bytes. &lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><category term="x86" /><summary type="html">On the x86 architecture, stack frames begin with sequence of instructions often referred to as the prologue. The prologue is inserted by the compiler into the binary to manage various information required to perform a function call. The prologue on x86 serves the purpose of: 1) Storing the previous function’s base pointer so it can be restored later when this function is returning, 2) Setting up the base pointer for this stack frame, 3) Creating space on the stack for the functions local variables. ```nasm ; x86 Stack Prologue Instruction - Intel Syntax</summary></entry><entry><title type="html">‘leave’ Instruction</title><link href="/2022/05/01/x86-leave-instruction" rel="alternate" type="text/html" title="‘leave’ Instruction" /><published>2022-05-01T00:00:00+00:00</published><updated>2022-05-01T00:00:00+00:00</updated><id>/2022/05/01/x86-leave-instruction</id><content type="html" xml:base="/2022/05/01/x86-leave-instruction">&lt;p&gt;&lt;br /&gt; 
+The &lt;em&gt;leave&lt;/em&gt; instruction is actually a combination of a few individual 
+instructions. Because the functionality provided by the atomic instructions 
+within leave are required so often, leave was introduced to reduce the space 
+taken up in the processor cache. The leave instruction is a combination of the 
+following: &lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-nasm highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;; *leave* instruction equivilent &lt;/span&gt;
+
+&lt;span class=&quot;nf&quot;&gt;mov&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;esp&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;ebp&lt;/span&gt;     &lt;span class=&quot;c1&quot;&gt;; This is destroying the stack frame by moving the stack pointer &lt;/span&gt;
+                &lt;span class=&quot;c1&quot;&gt;; (ESP) from where it is all the way to the base of the stack &lt;/span&gt;
+                &lt;span class=&quot;c1&quot;&gt;; frame essentially making the size of the stack frame 0 i.e. &lt;/span&gt;
+                &lt;span class=&quot;c1&quot;&gt;; it contains no addresses within the bounds of where ESP is &lt;/span&gt;
+                &lt;span class=&quot;c1&quot;&gt;; pointing to on the stack and where EBP is pointing to as they &lt;/span&gt;
+                &lt;span class=&quot;c1&quot;&gt;; are pointing to the same thing.&lt;/span&gt;
+                            
+&lt;span class=&quot;nf&quot;&gt;pop&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;ebp&lt;/span&gt;         &lt;span class=&quot;c1&quot;&gt;; This is now restoring the value of EBP to be the previous &lt;/span&gt;
+                &lt;span class=&quot;c1&quot;&gt;; stack frame's base pointer.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><category term="x86" /><summary type="html">The leave instruction is actually a combination of a few individual instructions. Because the functionality provided by the atomic instructions within leave are required so often, leave was introduced to reduce the space taken up in the processor cache. The leave instruction is a combination of the following: ```nasm ; leave instruction equivilent</summary></entry><entry><title type="html">PLT -&amp;gt; GOT Linking Walkthrough</title><link href="/2022/05/01/x86-plt-got-linking-process" rel="alternate" type="text/html" title="PLT -&amp;gt; GOT Linking Walkthrough" /><published>2022-05-01T00:00:00+00:00</published><updated>2022-05-01T00:00:00+00:00</updated><id>/2022/05/01/x86-plt-got-linking-process</id><content type="html" xml:base="/2022/05/01/x86-plt-got-linking-process">&lt;p&gt;&lt;br /&gt; 
+In dynamically linked ELF files, functions used from shared memory need to be 
+linked into the executable at runtime. This is because the executable does not
+contain its own copy of the function and hence does not know its address.&lt;br /&gt;
+&lt;br /&gt; 
+Linking functions is done through the use of the &lt;em&gt;Procedure Linkage Table 
+(&lt;strong&gt;PLT&lt;/strong&gt;)&lt;/em&gt; as well as the &lt;em&gt;Global Offset Table (&lt;strong&gt;GOT&lt;/strong&gt;)&lt;/em&gt;.&lt;br /&gt;
+&lt;br /&gt; 
+The general sequence of events is:
+&lt;br /&gt;  &lt;br /&gt;
+1) On the first call to a functions that needs to be dynamically loaded, you
+will call the PLT stub for that function.&lt;br /&gt;
+2) The PLT stub will then take you to the GOT table entry for that function.&lt;br /&gt;
+3) Since it is the first time you are calling this function the GOT table will 
+actually return you back to the PLT stub for that specific function (where you 
+just came from).&lt;br /&gt;
+4) Where the GOT returned you to will be an instruction to jump to the dynamic 
+linker which sits lower in memory within the PLT (near the beginning of where 
+the PLT section got loaded into memory). &lt;br /&gt;
+5) The dynamic linker will then find the actual function in shared memory and 
+then update that functions entry in the GOT table to point to the actual 
+executable code for the linked function instead of pointing back to the PLT. &lt;br /&gt;
+6) Now all subsequent calls to that function will go to it’s entry in the PLT 
+just like before which will take it to the GOT just like before, but now the 
+GOT will point to actual address to jump to in memory to execute the function.
+&lt;br /&gt;   &lt;br /&gt;
+You can view the &lt;em&gt;.plt&lt;/em&gt; and &lt;em&gt;.plt.got&lt;/em&gt; section of the ELF file and observe 
+the functions that will need to be linked.&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;objdump &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &amp;lt;binary_name&amp;gt; &lt;span class=&quot;nt&quot;&gt;-mi386&lt;/span&gt;:intel
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-ObjDump&quot;&gt;Output:
+... Other Disassembled Sections ...
+
+Disassembly of section .plt:
+
+00001020 &amp;lt;__libc_start_main@plt-0x10&amp;gt;:
+    1020:	ff b3 04 00 00 00    	push   DWORD PTR [ebx+0x4]
+    1026:	ff a3 08 00 00 00    	jmp    DWORD PTR [ebx+0x8]
+    102c:	00 00                	add    BYTE PTR [eax],al
+	...
+
+00001030 &amp;lt;__libc_start_main@plt&amp;gt;:
+    1030:	ff a3 0c 00 00 00    	jmp    DWORD PTR [ebx+0xc]
+    1036:	68 00 00 00 00       	push   0x0
+    103b:	e9 e0 ff ff ff       	jmp    1020 &amp;lt;_init+0x20&amp;gt;
+
+00001040 &amp;lt;printf@plt&amp;gt;:
+    1040:	ff a3 10 00 00 00    	jmp    DWORD PTR [ebx+0x10]
+    1046:	68 08 00 00 00       	push   0x8
+    104b:	e9 d0 ff ff ff       	jmp    1020 &amp;lt;_init+0x20&amp;gt;
+
+00001050 &amp;lt;getchar@plt&amp;gt;:
+    1050:	ff a3 14 00 00 00    	jmp    DWORD PTR [ebx+0x14]
+    1056:	68 10 00 00 00       	push   0x10
+    105b:	e9 c0 ff ff ff       	jmp    1020 &amp;lt;_init+0x20&amp;gt;
+
+Disassembly of section .plt.got:
+
+00001060 &amp;lt;__cxa_finalize@plt&amp;gt;:
+    1060:	ff a3 f0 ff ff ff    	jmp    DWORD PTR [ebx-0x10]
+    1066:	66 90                	xchg   ax,ax
+
+... Other Disassembled Sections ...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+The EBX register in all of the output above will be pointing to the Global 
+Offset Table. We will be looking at &lt;em&gt;printf@plt&lt;/em&gt; as an example. First you should
+notice that the memory addresses are all quite small, and this is because these
+values are just offsets, Relative Virtual Addresses (RVAs), once this executable
+is actually loaded into memory, these RVAs will be applied to the base address
+of the executable in memory.
+&lt;br /&gt;   &lt;br /&gt;
+You can see the first instruction inside &lt;em&gt;printf@plt&lt;/em&gt; is to jmp to the address
+held at ebp+0x10. As mentioned before EBP is holding the address of the GOT and 
+so 0x10 is just an offset into that table - presumably the offset of the printf
+entry that table.
+&lt;br /&gt;  &lt;br /&gt;
+To actually be able to inspect these values we need to run the executable and 
+inspect it with gdb. It’s important to note that if we want to watch the dynamic
+linking process occur we need to break before the first call to the function 
+that we want to inspect, otherwise it will already have been linked. If you were
+to break before the first call to printf@plt then you will be able to inspect 
+the PLT in gdb like so:
+&lt;br /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-GDB&quot;&gt;pwndbg&amp;gt; plt
+    Section .plt 0x565fa020-0x565fa060:
+    0x565fa030: __libc_start_main@plt
+    0x565fa040: printf@plt
+    0x565fa050: getchar@plt
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;br /&gt;
+From this we can see that the printf PLT entry is at 0x56610040. If we were to 
+inspect this address and look at the instruction in the PLT entry we would see
+something like:&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pwndbg&amp;gt; x/3i 0x56610040
+    0x565fa040 &amp;lt;&lt;span class=&quot;nb&quot;&gt;printf&lt;/span&gt;@plt&amp;gt;:	jmp    DWORD PTR &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;ebx+0x10]
+    0x565fa046 &amp;lt;&lt;span class=&quot;nb&quot;&gt;printf&lt;/span&gt;@plt+6&amp;gt;:	push   0x8
+    0x565fa04b &amp;lt;&lt;span class=&quot;nb&quot;&gt;printf&lt;/span&gt;@plt+11&amp;gt;:	jmp    0x565fa020
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;
+This looks pretty identical to the structure we saw in the PLT displayed by 
+objdump, however now we have proper addresses. So if someone were to call 
+printf@plt for the first time, the first instruction after the call they would
+execute is:
+&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;0x565fa040 &amp;lt;printf@plt&amp;gt;:	jmp    DWORD PTR [ebx+0x10]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;
+This is indexing into the GOT by 0x10, dereferencing that address and jumping to 
+it. Lets break that down a little, first lets have a look at where the GOT is in 
+memory and what it contains there. First i mentioned that EBX holds the value
+of the GOT, I got this information from gdb i.e.:&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;EBX  0x565fcff4 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;_GLOBAL_OFFSET_TABLE_&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; ◂— 0x3ef0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;
+If we use &lt;em&gt;vmmap&lt;/em&gt; to look at the memory layout of our process we will see that 
+the GOT address (EBP+0x10 = 0x565fd004) resides in the &lt;em&gt;DATA&lt;/em&gt; segment (It isn’t 
+color coded here so you will have to take my word for it): &lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;0x565f9000 0x565fa000 r--p     1000      0 /root/example
+0x565fa000 0x565fb000 r-xp     1000   1000 /root/example
+0x565fb000 0x565fc000 r--p     1000   2000 /root/example
+0x565fc000 0x565fd000 r--p     1000   2000 /root/example
+&lt;span class=&quot;k&quot;&gt;**&lt;/span&gt;0x565fd000 0x565fe000&lt;span class=&quot;k&quot;&gt;**&lt;/span&gt; rw-p     1000   3000 /root/example
+0x56ce6000 0x56d08000 rw-p    22000      0 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;heap]
+0xf7cfb000 0xf7d1d000 r--p    22000      0 /usr/lib/i386-linux-gnu/libc.so.6
+0xf7d1d000 0xf7e96000 r-xp   179000  22000 /usr/lib/i386-linux-gnu/libc.so.6
+0xf7e96000 0xf7f16000 r--p    80000 19b000 /usr/lib/i386-linux-gnu/libc.so.6
+0xf7f16000 0xf7f18000 r--p     2000 21b000 /usr/lib/i386-linux-gnu/libc.so.6
+0xf7f18000 0xf7f19000 rw-p     1000 21d000 /usr/lib/i386-linux-gnu/libc.so.6
+0xf7f19000 0xf7f23000 rw-p     a000      0 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;anon_f7f19]
+0xf7f2f000 0xf7f31000 rw-p     2000      0 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;anon_f7f2f]
+0xf7f31000 0xf7f35000 r--p     4000      0 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;vvar]
+0xf7f35000 0xf7f37000 r-xp     2000      0 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;vdso]
+0xf7f37000 0xf7f38000 r--p     1000      0 /usr/lib/i386-linux-gnu/ld-linux.so.2
+0xf7f38000 0xf7f5b000 r-xp    23000   1000 /usr/lib/i386-linux-gnu/ld-linux.so.2
+0xf7f5b000 0xf7f69000 r--p     e000  24000 /usr/lib/i386-linux-gnu/ld-linux.so.2
+0xf7f69000 0xf7f6b000 r--p     2000  31000 /usr/lib/i386-linux-gnu/ld-linux.so.2
+0xf7f6b000 0xf7f6c000 rw-p     1000  33000 /usr/lib/i386-linux-gnu/ld-linux.so.2
+0xff984000 0xff9a5000 rw-p    21000      0 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;stack]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;
+There isn’t instruction in the DATA section, so instead of using x/i to view 
+the instructions like we did the in the PLT we will just use x/a to view the
+addresses stored in the GOT: &lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pwndbg&amp;gt; x/a &lt;span class=&quot;nv&quot;&gt;$ebx&lt;/span&gt;+0x10
+    0x565fd004 &amp;lt;&lt;span class=&quot;nb&quot;&gt;printf&lt;/span&gt;@got.plt&amp;gt;:	0x565fa046
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;
+Notice how GDB has labeled that the address we are inspecting is the address of
+printf@got.plt i.e. printf’s entry in the GOT table. This address hold a another
+address ‘0x565fa046’. If we look back earlier in the post, the instruction in 
+the printf@plt stub was to jump to whatever value as stored in memory at 
+$EBP+0x10, so it wants us to jump to 0x565fa046 but what is there?&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pwndbg&amp;gt; x/3i 0x565fa046
+    0x565fa046 &amp;lt;&lt;span class=&quot;nb&quot;&gt;printf&lt;/span&gt;@plt+6&amp;gt;:	push   0x8
+    0x565fa04b &amp;lt;&lt;span class=&quot;nb&quot;&gt;printf&lt;/span&gt;@plt+11&amp;gt;:	jmp    0x565fa020
+    0x565fa050 &amp;lt;getchar@plt&amp;gt;:	jmp    DWORD PTR &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;ebx+0x14]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;
+Its actually just jumping right back to where we came from, this is because this
+is the first call to printf and it has not been linked yet. It will push 0x8 
+onto the stack and then it will jump to 0x565fa020 which just happens to be:&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pwndbg&amp;gt; x/10i 0x565fa020
+    0x565fa020:	push   DWORD PTR &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;ebx+0x4]  
+    0x565fa026:	jmp    DWORD PTR &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;ebx+0x8]
+    0x565fa02c:	add    BYTE PTR &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;eax],al
+    0x565fa02e:	add    BYTE PTR &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;eax],al
+    0x565fa030 &amp;lt;__libc_start_main@plt&amp;gt;:	jmp    DWORD PTR &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;ebx+0xc]
+    0x565fa036 &amp;lt;__libc_start_main@plt+6&amp;gt;:	push   0x0
+    0x565fa03b &amp;lt;__libc_start_main@plt+11&amp;gt;:	jmp    0x565fa020
+    0x565fa040 &amp;lt;&lt;span class=&quot;nb&quot;&gt;printf&lt;/span&gt;@plt&amp;gt;:	jmp    DWORD PTR &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;ebx+0x10]
+    0x565fa046 &amp;lt;&lt;span class=&quot;nb&quot;&gt;printf&lt;/span&gt;@plt+6&amp;gt;:	push   0x8
+    0x565fa04b &amp;lt;&lt;span class=&quot;nb&quot;&gt;printf&lt;/span&gt;@plt+11&amp;gt;:	jmp    0x565fa020
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;
+just slightly further up in the PLT. Near the beginning of the PLT you will have
+your dynamic linker which all PLT stubs will have to go through to link their 
+respective functions.&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;0x565fa020:	push   DWORD PTR [ebx+0x4]  : Pushes the ELF magic bytes onto the 
+                                        ; stack presumably as a argument for the
+                                        ; linker to use.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;
+Now we are jumping to ebx+0x8, we know ebx is the GOT, we know that ebx+0x10 is 
+the offset into the GOT for the printf entry, what about an offset of 0x8?&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pwndbg&amp;gt; x/a &lt;span class=&quot;nv&quot;&gt;$ebx&lt;/span&gt;+0x8
+    0x565fcffc:	0xf7f498c0
+pwndbg&amp;gt; x/i 0xf7f498c0
+    0xf7f498c0 &amp;lt;_dl_runtime_resolve&amp;gt;:	push   eax
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;
+At $ebx+0x8 it stores the address 0xf7f498c0, which is jumped to, and we can 
+see from next line, that 0xf7f498c0 is the address of the dynamic runtime linker
+runtime resolver. This function is what will actually go and find the address of
+printf and then update the value of the GOT with the address of the printf 
+function for subsequent calls. If we were to break at the second use of printf 
+and inspect where its jumping to we will see a similar PLT but a different GOT
+for example, this is right before out second call to printf: &lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Section .plt 0x565fa020-0x565fa060:
+    0x565fa030: __libc_start_main@plt
+    0x565fa040: &lt;span class=&quot;nb&quot;&gt;printf&lt;/span&gt;@plt
+    0x565fa050: getchar@plt
+pwndbg&amp;gt; x/3i 0x565fa040
+    0x565fa040 &amp;lt;&lt;span class=&quot;nb&quot;&gt;printf&lt;/span&gt;@plt&amp;gt;:	jmp    DWORD PTR &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;ebx+0x10]
+    0x565fa046 &amp;lt;&lt;span class=&quot;nb&quot;&gt;printf&lt;/span&gt;@plt+6&amp;gt;:	push   0x8
+    0x565fa04b &amp;lt;&lt;span class=&quot;nb&quot;&gt;printf&lt;/span&gt;@plt+11&amp;gt;:	jmp    0x565fa020
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;
+We can see that the PLT looks the same, what about when we inspect what value 
+is stored at ebx+0x10?&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pwndbg&amp;gt; x/a &lt;span class=&quot;nv&quot;&gt;$ebx&lt;/span&gt;+0x10
+    0x565fd004 &amp;lt;&lt;span class=&quot;nb&quot;&gt;printf&lt;/span&gt;@got.plt&amp;gt;:	0xf7d4ee40
+pwndbg&amp;gt; x/3i 0xf7d4ee40
+    0xf7d4ee40 &amp;lt;__printf&amp;gt;:	call   0xf7e69d4d &amp;lt;__x86.get_pc_thunk.ax&amp;gt;
+    0xf7d4ee45 &amp;lt;__printf+5&amp;gt;:	add    eax,0x1c91af
+    0xf7d4ee4a &amp;lt;__printf+10&amp;gt;:	sub    esp,0xc
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;
+We can see that ebx+0x10 still points to the printf entry in the GOT, but now
+it is storing a different value, instead of jumping back to the PLT like it did
+the first time, it now points to 0xf7d4ee40 which is the first instruction in 
+printf.&lt;/p&gt;</content><author><name></name></author><category term="x86" /><summary type="html">In dynamically linked ELF files, functions used from shared memory need to be linked into the executable at runtime. This is because the executable does not contain its own copy of the function and hence does not know its address. Linking functions is done through the use of the Procedure Linkage Table (PLT) as well as the Global Offset Table (GOT). The general sequence of events is: 1) On the first call to a functions that needs to be dynamically loaded, you will call the PLT stub for that function. 2) The PLT stub will then take you to the GOT table entry for that function. 3) Since it is the first time you are calling this function the GOT table will actually return you back to the PLT stub for that specific function (where you just came from). 4) Where the GOT returned you to will be an instruction to jump to the dynamic linker which sits lower in memory within the PLT (near the beginning of where the PLT section got loaded into memory). 5) The dynamic linker will then find the actual function in shared memory and then update that functions entry in the GOT table to point to the actual executable code for the linked function instead of pointing back to the PLT. 6) Now all subsequent calls to that function will go to it’s entry in the PLT just like before which will take it to the GOT just like before, but now the GOT will point to actual address to jump to in memory to execute the function. You can view the .plt and .plt.got section of the ELF file and observe the functions that will need to be linked. objdump -d &amp;lt;binary_name&amp;gt; -mi386:intel ``` ObjDump Output: … Other Disassembled Sections …</summary></entry><entry><title type="html">Real Mode</title><link href="/2022/05/01/x86-real-mode" rel="alternate" type="text/html" title="Real Mode" /><published>2022-05-01T00:00:00+00:00</published><updated>2022-05-01T00:00:00+00:00</updated><id>/2022/05/01/x86-real-mode</id><content type="html" xml:base="/2022/05/01/x86-real-mode">&lt;p&gt;&lt;br /&gt; 
+Real mode is a mode of operation for x86 CPU’s. Real mode is also called real 
+address mode, because all memory address references are to actual addresses in 
+hardware. This means all programs share one big address space; There is no 
+protection in place to prevent one program from accessing the memory of another
+program.   &lt;br /&gt;
+&lt;br /&gt; 
+Real mode used to be the only mode of operation but now there is protected mode 
+which provides a virtual address space for each program.&lt;br /&gt;
+&lt;br /&gt; 
+In real mode on the 8086 processor, you have 20 bit address space (1MB). This is 
+used collectively by all programs. The way you address memory is by a segmented
+addressing scheme in which you provide a 16bit segment number which gets 
+converted into the base address of the segment you want to address but left 
+shifting the value 4 bits adding 4 0s in the least significant 4 bytes of the 
+number. Then the 16bit offset value is added giving you an address in the 
+referenced segment. This actually allows for more than 20bits of addressable 
+memory so to cope with that, the value is taken to the modulo of 2^20 to wrap
+the address around to the beginning.  &lt;br /&gt;
+&lt;br /&gt; 
+An example of this would be:   &lt;br /&gt;
+Code Segment (CS) register: 0xF11A  &lt;br /&gt;
+Offset: 0x3A   &lt;br /&gt;
+CS register left shift: 0xF11A0   &lt;br /&gt;
+Real Address: 0xF11A0+0x3A = 0xF11DA&lt;/p&gt;</content><author><name></name></author><category term="x86" /><summary type="html">Real mode is a mode of operation for x86 CPU’s. Real mode is also called real address mode, because all memory address references are to actual addresses in hardware. This means all programs share one big address space; There is no protection in place to prevent one program from accessing the memory of another program. Real mode used to be the only mode of operation but now there is protected mode which provides a virtual address space for each program. In real mode on the 8086 processor, you have 20 bit address space (1MB). This is used collectively by all programs. The way you address memory is by a segmented addressing scheme in which you provide a 16bit segment number which gets converted into the base address of the segment you want to address but left shifting the value 4 bits adding 4 0s in the least significant 4 bytes of the number. Then the 16bit offset value is added giving you an address in the referenced segment. This actually allows for more than 20bits of addressable memory so to cope with that, the value is taken to the modulo of 2^20 to wrap the address around to the beginning. An example of this would be: Code Segment (CS) register: 0xF11A Offset: 0x3A CS register left shift: 0xF11A0 Real Address: 0xF11A0+0x3A = 0xF11DA</summary></entry><entry><title type="html">‘ret’ Instruction</title><link href="/2022/05/01/x86-ret-instruction" rel="alternate" type="text/html" title="‘ret’ Instruction" /><published>2022-05-01T00:00:00+00:00</published><updated>2022-05-01T00:00:00+00:00</updated><id>/2022/05/01/x86-ret-instruction</id><content type="html" xml:base="/2022/05/01/x86-ret-instruction">&lt;p&gt;&lt;br /&gt;  &lt;br /&gt;
+The &lt;em&gt;ret&lt;/em&gt; instruction is not a real instruction per say, it gets converted to a 
+&lt;em&gt;retn&lt;/em&gt; or a &lt;em&gt;retf&lt;/em&gt;, standing for “Return Near” and “Return Far” respectively. 
+This depends on where you are returning to in memory. A retn is for when you are 
+returning to an address within the same segment you are currently in, and a retf 
+is for when you return to a different segment. &lt;br /&gt;
+&lt;br /&gt;  &lt;br /&gt;
+Generally speaking a &lt;em&gt;retn&lt;/em&gt; will:&lt;/p&gt;
+&lt;div class=&quot;language-nasm highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nf&quot;&gt;pop&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;eip&lt;/span&gt;     &lt;span class=&quot;c1&quot;&gt;; This operation has two effects: 1) it will remove the return &lt;/span&gt;
+            &lt;span class=&quot;c1&quot;&gt;; address from the top of the stack and place it into the EIP &lt;/span&gt;
+            &lt;span class=&quot;c1&quot;&gt;; register. 2) Since it was placed within the EIP register which &lt;/span&gt;
+            &lt;span class=&quot;c1&quot;&gt;; always points to the currently executing instruction in memory,&lt;/span&gt;
+            &lt;span class=&quot;c1&quot;&gt;; execution will now jump to that address and continue executing &lt;/span&gt;
+            &lt;span class=&quot;c1&quot;&gt;; from there.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;  &lt;br /&gt;
+A &lt;em&gt;ret&lt;/em&gt; can be provided a value, e.g. &lt;em&gt;ret 4&lt;/em&gt; which is typically used in
+calling conventions where the callee cleans up the stack. A &lt;em&gt;ret 4&lt;/em&gt; will return 
+to the caller and then add 4 to ESP to remove the pushed argument to the 
+function that was just returned from off the stack.&lt;br /&gt;
+&lt;br /&gt;  &lt;br /&gt;
+&lt;em&gt;Example&lt;/em&gt;: If you passed a function two integers (assuming they are 4 bytes 
+each) you would likely see a &lt;em&gt;ret 8&lt;/em&gt; within the called function to clean up 
+those two arguments from the stack once returned.&lt;br /&gt;
+&lt;br /&gt;  &lt;br /&gt;
+For the cdecl calling convention, the caller is expected to clean up the stack 
+not the callee. So with cdecl functions you will often just see a &lt;em&gt;ret&lt;/em&gt; at the
+end of the function, then immediately after you return execution to the caller 
+you will see a value to be added to the ESP value depending on how many 
+arguments were passed to the function that was just returned from and any other 
+values that were pushed onto the stack during the execution of those functions.&lt;/p&gt;</content><author><name></name></author><category term="x86" /><summary type="html">The ret instruction is not a real instruction per say, it gets converted to a retn or a retf, standing for “Return Near” and “Return Far” respectively. This depends on where you are returning to in memory. A retn is for when you are returning to an address within the same segment you are currently in, and a retf is for when you return to a different segment. Generally speaking a retn will: pop eip ; This operation has two effects: 1) it will remove the return ; address from the top of the stack and place it into the EIP ; register. 2) Since it was placed within the EIP register which ; always points to the currently executing instruction in memory, ; execution will now jump to that address and continue executing ; from there. A ret can be provided a value, e.g. ret 4 which is typically used in calling conventions where the callee cleans up the stack. A ret 4 will return to the caller and then add 4 to ESP to remove the pushed argument to the function that was just returned from off the stack. Example: If you passed a function two integers (assuming they are 4 bytes each) you would likely see a ret 8 within the called function to clean up those two arguments from the stack once returned. For the cdecl calling convention, the caller is expected to clean up the stack not the callee. So with cdecl functions you will often just see a ret at the end of the function, then immediately after you return execution to the caller you will see a value to be added to the ESP value depending on how many arguments were passed to the function that was just returned from and any other values that were pushed onto the stack during the execution of those functions.</summary></entry><entry><title type="html">Stack Frames</title><link href="/2022/05/01/x86-stack-frames" rel="alternate" type="text/html" title="Stack Frames" /><published>2022-05-01T00:00:00+00:00</published><updated>2022-05-01T00:00:00+00:00</updated><id>/2022/05/01/x86-stack-frames</id><content type="html" xml:base="/2022/05/01/x86-stack-frames">&lt;p&gt;&lt;br /&gt;
+A stack frame is an designation of a segment of the process’s stack for each 
+function that is called. It was designed this way so that each function can 
+execute without having to know it position in the process’s stack. This is 
+because each stack frame tracks its starting address (known as the base address
+of the stack frame) inside the Extended Base Pointer (EBP) register. It can then 
+reference the arguments passed to that function as well as its local variables 
+as a offset from the address in the EBP register. The EBP register will hold the 
+base address for the function that is currently executing (function B), and will 
+be updated for a new function called by function B (function C), or when 
+returning to the function that called function B (function A). The managing of 
+the base address in the EBP register is done through the setup and tear down of 
+a functions stack frame (often referred to as the prologue and epilogue 
+respectively).  &lt;br /&gt;
+&lt;br /&gt;
+Another reason for functions to be handled this way is so that a function’s 
+stack frame is always executed at the top of the stack and grows into new space. 
+This saves the function from having to track the size of it’s own stack frame
+as well as other functions’ stacks frames to ensure there is no overlap. Since 
+the currently executing function’s stack frame is at the top of the stack its
+only ever growing into new, unused stack space (up to the size limit for the 
+that processes stack).&lt;/p&gt;</content><author><name></name></author><category term="x86" /><summary type="html">A stack frame is an designation of a segment of the process’s stack for each function that is called. It was designed this way so that each function can execute without having to know it position in the process’s stack. This is because each stack frame tracks its starting address (known as the base address of the stack frame) inside the Extended Base Pointer (EBP) register. It can then reference the arguments passed to that function as well as its local variables as a offset from the address in the EBP register. The EBP register will hold the base address for the function that is currently executing (function B), and will be updated for a new function called by function B (function C), or when returning to the function that called function B (function A). The managing of the base address in the EBP register is done through the setup and tear down of a functions stack frame (often referred to as the prologue and epilogue respectively). Another reason for functions to be handled this way is so that a function’s stack frame is always executed at the top of the stack and grows into new space. This saves the function from having to track the size of it’s own stack frame as well as other functions’ stacks frames to ensure there is no overlap. Since the currently executing function’s stack frame is at the top of the stack its only ever growing into new, unused stack space (up to the size limit for the that processes stack).</summary></entry></feed>

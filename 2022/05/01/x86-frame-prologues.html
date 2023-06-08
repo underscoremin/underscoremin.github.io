@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Stack Frame Prologues | underscoremin</title>
+<meta name="generator" content="Jekyll v3.9.3" />
+<meta property="og:title" content="Stack Frame Prologues" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="On the x86 architecture, stack frames begin with sequence of instructions often referred to as the prologue. The prologue is inserted by the compiler into the binary to manage various information required to perform a function call. The prologue on x86 serves the purpose of: 1) Storing the previous function’s base pointer so it can be restored later when this function is returning, 2) Setting up the base pointer for this stack frame, 3) Creating space on the stack for the functions local variables. ```nasm ; x86 Stack Prologue Instruction - Intel Syntax" />
+<meta property="og:description" content="On the x86 architecture, stack frames begin with sequence of instructions often referred to as the prologue. The prologue is inserted by the compiler into the binary to manage various information required to perform a function call. The prologue on x86 serves the purpose of: 1) Storing the previous function’s base pointer so it can be restored later when this function is returning, 2) Setting up the base pointer for this stack frame, 3) Creating space on the stack for the functions local variables. ```nasm ; x86 Stack Prologue Instruction - Intel Syntax" />
+<link rel="canonical" href="/2022/05/01/x86-frame-prologues" />
+<meta property="og:url" content="/2022/05/01/x86-frame-prologues" />
+<meta property="og:site_name" content="underscoremin" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-05-01T00:00:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Stack Frame Prologues" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-05-01T00:00:00+00:00","datePublished":"2022-05-01T00:00:00+00:00","description":"On the x86 architecture, stack frames begin with sequence of instructions often referred to as the prologue. The prologue is inserted by the compiler into the binary to manage various information required to perform a function call. The prologue on x86 serves the purpose of: 1) Storing the previous function’s base pointer so it can be restored later when this function is returning, 2) Setting up the base pointer for this stack frame, 3) Creating space on the stack for the functions local variables. ```nasm ; x86 Stack Prologue Instruction - Intel Syntax","headline":"Stack Frame Prologues","mainEntityOfPage":{"@type":"WebPage","@id":"/2022/05/01/x86-frame-prologues"},"url":"/2022/05/01/x86-frame-prologues"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+<meta
+  name="keywords"
+  content="" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" href="/favicon.ico" />
+<link
+  rel="alternate"
+  type="application/rss+xml"
+  title="underscoremin - Mini security posts. "
+  href="/feed.xml" />
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="/assets/css/base.css" />
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="/assets/css/highlight.css" />
+
+<!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+    mermaid.initialize(
+        {
+            startOnLoad: true,
+            theme: "base",
+			'themeVariables': {
+				'primaryColor': '#ba91ed',
+			    'primaryTextColor': '#fff',
+			    'primaryBorderColor': '#2b0061',
+			    'lineColor': '#2b0061',
+			    'secondaryColor': '#eae4ef',
+			    'tertiaryColor': '#f2e8ff',
+			    'tertiaryBorderColor': '#2b0061',
+                'darkMode': true,
+            },
+            flowchart: {
+                diagramPadding: 30,
+                rankSpacing: 100,
+                padding: 7,
+                useMaxWidth: true
+            }
+        }
+
+    );
+</script>
+
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"
+  async>
+</script>
+
+
+
+  </head>
+  <body>
+    <div class="container-wrapper">
+      <header class="container-header">
+        <div class="header-info">
+  <span class="header-info-name">underscoremin</span>
+  <span class="header-info-desc">Mini security posts. </span>
+</div>
+<nav class="header-nav">
+  <ul class="header-main-nav">
+    
+    <li class="header-main-nav-item">
+      <a href="/">
+        
+          Index
+        
+      </a>
+    </li>
+    
+    <li class="header-main-nav-item">
+      <a href="/categories">
+        
+          Categories
+        
+      </a>
+    </li>
+    
+    <li class="header-main-nav-item">
+      <a href="/about">
+        
+          About
+        
+      </a>
+    </li>
+    
+  </ul>
+</nav>
+
+      </header>
+      <main class="container-main">
+        <article class="container-post">
+  <div class="post-title">
+    <h1>Stack Frame Prologues</h1>
+  </div>
+  
+  <div class="post-author print-post-author">
+    <span>_min</span>
+  </div>
+  
+  <div class="post-content">
+    <p><br /> 
+On the x86 architecture, 
+<a href="/2022/05/01/x86-stack-frames">stack frames</a> begin with sequence 
+of instructions often referred to as the <em>prologue</em>. The prologue is inserted by 
+the compiler into the binary to manage various information required to perform a 
+function call. The prologue on x86 serves the purpose of:
+<br /><br />
+1) Storing the previous function’s 
+<a href="/2022/05/01/x86-base-pointer">base pointer</a> so it can be restored 
+later when this function is returning,</p>
+
+<p>2) Setting up the base pointer for this stack frame,</p>
+
+<p>3) Creating space on the stack for the functions local variables. <br />
+<br /></p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">; x86 Stack Prologue Instruction - Intel Syntax</span>
+
+<span class="nf">push</span> <span class="nb">ebp</span>        <span class="c1">; Save the calling function's base pointer on the stack to be </span>
+                <span class="c1">; restored in this stack frames epilogue</span>
+
+<span class="nf">mov</span> <span class="nb">ebp</span><span class="p">,</span> <span class="nb">esp</span>    <span class="c1">; Setup the current stack frames base pointer. It is set to </span>
+                <span class="c1">; the value of ESP because ESP points to the top of the stack</span>
+                <span class="c1">; and the top of the stack is where we will begin to create </span>
+                <span class="c1">; our new stack frame for the currently executing function</span>
+
+<span class="nf">sub</span> <span class="nb">esp</span><span class="p">,</span> <span class="mh">0x8</span>    <span class="c1">; Make room for this function's local variables on the stack. </span>
+                <span class="c1">; Before executing this instruction, the base pointer (EBP) and </span>
+                <span class="c1">; the stack pointer (ESP) point to the same thing, hence you can </span>
+                <span class="c1">; consider the current size of this stack frame to be 0. Since </span>
+                <span class="c1">; the stack grows downards, we minus a value (in this case I </span>
+                <span class="c1">; chose 0x8 at random) from the current ESP location to create </span>
+                <span class="c1">; new space on the stack for local function variables. In this </span>
+                <span class="c1">; example you might have 2 variables each of size 0x4 bytes or</span>
+                <span class="c1">; you may have one variable with a size of 0x8 bytes. </span>
+</code></pre></div></div>
+
+  </div>
+  <div class="post-info">
+    <div class="post-date">
+      Written on 
+      2022-05-01
+      
+      .
+    </div>
+    
+    <div class="post-author">
+      Author: _min
+    </div>
+    
+    <div class="post-categories">
+      <span>Categories: </span>
+      
+      <a 
+        href="/categories#x86"
+        class="post-category">
+        x86
+      </a>
+      
+    </div>
+    <div class="post-tags">
+      <span>Tags: </span>
+      
+    </div>
+    <div class="post-other">
+      
+      <div>
+        <span>
+          Next: 
+        </span>
+        <a href="/2022/05/01/x86-leave-instruction">
+          'leave' Instruction
+        </a>
+      </div>
+      
+      
+      <div>
+        <span>
+          Previous: 
+        </span>
+        <a href="/2022/05/01/x86-frame-epilogues">
+          Stack Frame Epilogues
+        </a>
+      </div>
+      
+    </div>
+    
+  </div>
+</article>
+
+      </main>
+      <footer class="container-footer">
+        <div class="footer-copyright">
+  <span class="footer-copyright-text float-left">
+  </span>
+</div>
+
+      </footer>
+    </div>
+  </body>
+</html>

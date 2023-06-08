@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>‘ret’ Instruction | underscoremin</title>
+<meta name="generator" content="Jekyll v3.9.3" />
+<meta property="og:title" content="‘ret’ Instruction" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="The ret instruction is not a real instruction per say, it gets converted to a retn or a retf, standing for “Return Near” and “Return Far” respectively. This depends on where you are returning to in memory. A retn is for when you are returning to an address within the same segment you are currently in, and a retf is for when you return to a different segment. Generally speaking a retn will: pop eip ; This operation has two effects: 1) it will remove the return ; address from the top of the stack and place it into the EIP ; register. 2) Since it was placed within the EIP register which ; always points to the currently executing instruction in memory, ; execution will now jump to that address and continue executing ; from there. A ret can be provided a value, e.g. ret 4 which is typically used in calling conventions where the callee cleans up the stack. A ret 4 will return to the caller and then add 4 to ESP to remove the pushed argument to the function that was just returned from off the stack. Example: If you passed a function two integers (assuming they are 4 bytes each) you would likely see a ret 8 within the called function to clean up those two arguments from the stack once returned. For the cdecl calling convention, the caller is expected to clean up the stack not the callee. So with cdecl functions you will often just see a ret at the end of the function, then immediately after you return execution to the caller you will see a value to be added to the ESP value depending on how many arguments were passed to the function that was just returned from and any other values that were pushed onto the stack during the execution of those functions." />
+<meta property="og:description" content="The ret instruction is not a real instruction per say, it gets converted to a retn or a retf, standing for “Return Near” and “Return Far” respectively. This depends on where you are returning to in memory. A retn is for when you are returning to an address within the same segment you are currently in, and a retf is for when you return to a different segment. Generally speaking a retn will: pop eip ; This operation has two effects: 1) it will remove the return ; address from the top of the stack and place it into the EIP ; register. 2) Since it was placed within the EIP register which ; always points to the currently executing instruction in memory, ; execution will now jump to that address and continue executing ; from there. A ret can be provided a value, e.g. ret 4 which is typically used in calling conventions where the callee cleans up the stack. A ret 4 will return to the caller and then add 4 to ESP to remove the pushed argument to the function that was just returned from off the stack. Example: If you passed a function two integers (assuming they are 4 bytes each) you would likely see a ret 8 within the called function to clean up those two arguments from the stack once returned. For the cdecl calling convention, the caller is expected to clean up the stack not the callee. So with cdecl functions you will often just see a ret at the end of the function, then immediately after you return execution to the caller you will see a value to be added to the ESP value depending on how many arguments were passed to the function that was just returned from and any other values that were pushed onto the stack during the execution of those functions." />
+<link rel="canonical" href="/2022/05/01/x86-ret-instruction" />
+<meta property="og:url" content="/2022/05/01/x86-ret-instruction" />
+<meta property="og:site_name" content="underscoremin" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-05-01T00:00:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="‘ret’ Instruction" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-05-01T00:00:00+00:00","datePublished":"2022-05-01T00:00:00+00:00","description":"The ret instruction is not a real instruction per say, it gets converted to a retn or a retf, standing for “Return Near” and “Return Far” respectively. This depends on where you are returning to in memory. A retn is for when you are returning to an address within the same segment you are currently in, and a retf is for when you return to a different segment. Generally speaking a retn will: pop eip ; This operation has two effects: 1) it will remove the return ; address from the top of the stack and place it into the EIP ; register. 2) Since it was placed within the EIP register which ; always points to the currently executing instruction in memory, ; execution will now jump to that address and continue executing ; from there. A ret can be provided a value, e.g. ret 4 which is typically used in calling conventions where the callee cleans up the stack. A ret 4 will return to the caller and then add 4 to ESP to remove the pushed argument to the function that was just returned from off the stack. Example: If you passed a function two integers (assuming they are 4 bytes each) you would likely see a ret 8 within the called function to clean up those two arguments from the stack once returned. For the cdecl calling convention, the caller is expected to clean up the stack not the callee. So with cdecl functions you will often just see a ret at the end of the function, then immediately after you return execution to the caller you will see a value to be added to the ESP value depending on how many arguments were passed to the function that was just returned from and any other values that were pushed onto the stack during the execution of those functions.","headline":"‘ret’ Instruction","mainEntityOfPage":{"@type":"WebPage","@id":"/2022/05/01/x86-ret-instruction"},"url":"/2022/05/01/x86-ret-instruction"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+<meta
+  name="keywords"
+  content="" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" href="/favicon.ico" />
+<link
+  rel="alternate"
+  type="application/rss+xml"
+  title="underscoremin - Mini security posts. "
+  href="/feed.xml" />
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="/assets/css/base.css" />
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="/assets/css/highlight.css" />
+
+<!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+    mermaid.initialize(
+        {
+            startOnLoad: true,
+            theme: "base",
+			'themeVariables': {
+				'primaryColor': '#ba91ed',
+			    'primaryTextColor': '#fff',
+			    'primaryBorderColor': '#2b0061',
+			    'lineColor': '#2b0061',
+			    'secondaryColor': '#eae4ef',
+			    'tertiaryColor': '#f2e8ff',
+			    'tertiaryBorderColor': '#2b0061',
+                'darkMode': true,
+            },
+            flowchart: {
+                diagramPadding: 30,
+                rankSpacing: 100,
+                padding: 7,
+                useMaxWidth: true
+            }
+        }
+
+    );
+</script>
+
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"
+  async>
+</script>
+
+
+
+  </head>
+  <body>
+    <div class="container-wrapper">
+      <header class="container-header">
+        <div class="header-info">
+  <span class="header-info-name">underscoremin</span>
+  <span class="header-info-desc">Mini security posts. </span>
+</div>
+<nav class="header-nav">
+  <ul class="header-main-nav">
+    
+    <li class="header-main-nav-item">
+      <a href="/">
+        
+          Index
+        
+      </a>
+    </li>
+    
+    <li class="header-main-nav-item">
+      <a href="/categories">
+        
+          Categories
+        
+      </a>
+    </li>
+    
+    <li class="header-main-nav-item">
+      <a href="/about">
+        
+          About
+        
+      </a>
+    </li>
+    
+  </ul>
+</nav>
+
+      </header>
+      <main class="container-main">
+        <article class="container-post">
+  <div class="post-title">
+    <h1>'ret' Instruction</h1>
+  </div>
+  
+  <div class="post-author print-post-author">
+    <span>_min</span>
+  </div>
+  
+  <div class="post-content">
+    <p><br />  <br />
+The <em>ret</em> instruction is not a real instruction per say, it gets converted to a 
+<em>retn</em> or a <em>retf</em>, standing for “Return Near” and “Return Far” respectively. 
+This depends on where you are returning to in memory. A retn is for when you are 
+returning to an address within the same segment you are currently in, and a retf 
+is for when you return to a different segment. <br />
+<br />  <br />
+Generally speaking a <em>retn</em> will:</p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">pop</span> <span class="nv">eip</span>     <span class="c1">; This operation has two effects: 1) it will remove the return </span>
+            <span class="c1">; address from the top of the stack and place it into the EIP </span>
+            <span class="c1">; register. 2) Since it was placed within the EIP register which </span>
+            <span class="c1">; always points to the currently executing instruction in memory,</span>
+            <span class="c1">; execution will now jump to that address and continue executing </span>
+            <span class="c1">; from there.</span>
+</code></pre></div></div>
+<p><br />  <br />
+A <em>ret</em> can be provided a value, e.g. <em>ret 4</em> which is typically used in
+calling conventions where the callee cleans up the stack. A <em>ret 4</em> will return 
+to the caller and then add 4 to ESP to remove the pushed argument to the 
+function that was just returned from off the stack.<br />
+<br />  <br />
+<em>Example</em>: If you passed a function two integers (assuming they are 4 bytes 
+each) you would likely see a <em>ret 8</em> within the called function to clean up 
+those two arguments from the stack once returned.<br />
+<br />  <br />
+For the cdecl calling convention, the caller is expected to clean up the stack 
+not the callee. So with cdecl functions you will often just see a <em>ret</em> at the
+end of the function, then immediately after you return execution to the caller 
+you will see a value to be added to the ESP value depending on how many 
+arguments were passed to the function that was just returned from and any other 
+values that were pushed onto the stack during the execution of those functions.</p>
+
+  </div>
+  <div class="post-info">
+    <div class="post-date">
+      Written on 
+      2022-05-01
+      
+      .
+    </div>
+    
+    <div class="post-author">
+      Author: _min
+    </div>
+    
+    <div class="post-categories">
+      <span>Categories: </span>
+      
+      <a 
+        href="/categories#x86"
+        class="post-category">
+        x86
+      </a>
+      
+    </div>
+    <div class="post-tags">
+      <span>Tags: </span>
+      
+    </div>
+    <div class="post-other">
+      
+      <div>
+        <span>
+          Next: 
+        </span>
+        <a href="/2022/05/01/x86-stack-frames">
+          Stack Frames
+        </a>
+      </div>
+      
+      
+      <div>
+        <span>
+          Previous: 
+        </span>
+        <a href="/2022/05/01/x86-real-mode">
+          Real Mode
+        </a>
+      </div>
+      
+    </div>
+    
+  </div>
+</article>
+
+      </main>
+      <footer class="container-footer">
+        <div class="footer-copyright">
+  <span class="footer-copyright-text float-left">
+  </span>
+</div>
+
+      </footer>
+    </div>
+  </body>
+</html>

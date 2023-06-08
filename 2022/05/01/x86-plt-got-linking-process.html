@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>PLT -&gt; GOT Linking Walkthrough | underscoremin</title>
+<meta name="generator" content="Jekyll v3.9.3" />
+<meta property="og:title" content="PLT -&gt; GOT Linking Walkthrough" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="In dynamically linked ELF files, functions used from shared memory need to be linked into the executable at runtime. This is because the executable does not contain its own copy of the function and hence does not know its address. Linking functions is done through the use of the Procedure Linkage Table (PLT) as well as the Global Offset Table (GOT). The general sequence of events is: 1) On the first call to a functions that needs to be dynamically loaded, you will call the PLT stub for that function. 2) The PLT stub will then take you to the GOT table entry for that function. 3) Since it is the first time you are calling this function the GOT table will actually return you back to the PLT stub for that specific function (where you just came from). 4) Where the GOT returned you to will be an instruction to jump to the dynamic linker which sits lower in memory within the PLT (near the beginning of where the PLT section got loaded into memory). 5) The dynamic linker will then find the actual function in shared memory and then update that functions entry in the GOT table to point to the actual executable code for the linked function instead of pointing back to the PLT. 6) Now all subsequent calls to that function will go to it’s entry in the PLT just like before which will take it to the GOT just like before, but now the GOT will point to actual address to jump to in memory to execute the function. You can view the .plt and .plt.got section of the ELF file and observe the functions that will need to be linked. objdump -d &lt;binary_name&gt; -mi386:intel ``` ObjDump Output: … Other Disassembled Sections …" />
+<meta property="og:description" content="In dynamically linked ELF files, functions used from shared memory need to be linked into the executable at runtime. This is because the executable does not contain its own copy of the function and hence does not know its address. Linking functions is done through the use of the Procedure Linkage Table (PLT) as well as the Global Offset Table (GOT). The general sequence of events is: 1) On the first call to a functions that needs to be dynamically loaded, you will call the PLT stub for that function. 2) The PLT stub will then take you to the GOT table entry for that function. 3) Since it is the first time you are calling this function the GOT table will actually return you back to the PLT stub for that specific function (where you just came from). 4) Where the GOT returned you to will be an instruction to jump to the dynamic linker which sits lower in memory within the PLT (near the beginning of where the PLT section got loaded into memory). 5) The dynamic linker will then find the actual function in shared memory and then update that functions entry in the GOT table to point to the actual executable code for the linked function instead of pointing back to the PLT. 6) Now all subsequent calls to that function will go to it’s entry in the PLT just like before which will take it to the GOT just like before, but now the GOT will point to actual address to jump to in memory to execute the function. You can view the .plt and .plt.got section of the ELF file and observe the functions that will need to be linked. objdump -d &lt;binary_name&gt; -mi386:intel ``` ObjDump Output: … Other Disassembled Sections …" />
+<link rel="canonical" href="/2022/05/01/x86-plt-got-linking-process" />
+<meta property="og:url" content="/2022/05/01/x86-plt-got-linking-process" />
+<meta property="og:site_name" content="underscoremin" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-05-01T00:00:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="PLT -&gt; GOT Linking Walkthrough" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-05-01T00:00:00+00:00","datePublished":"2022-05-01T00:00:00+00:00","description":"In dynamically linked ELF files, functions used from shared memory need to be linked into the executable at runtime. This is because the executable does not contain its own copy of the function and hence does not know its address. Linking functions is done through the use of the Procedure Linkage Table (PLT) as well as the Global Offset Table (GOT). The general sequence of events is: 1) On the first call to a functions that needs to be dynamically loaded, you will call the PLT stub for that function. 2) The PLT stub will then take you to the GOT table entry for that function. 3) Since it is the first time you are calling this function the GOT table will actually return you back to the PLT stub for that specific function (where you just came from). 4) Where the GOT returned you to will be an instruction to jump to the dynamic linker which sits lower in memory within the PLT (near the beginning of where the PLT section got loaded into memory). 5) The dynamic linker will then find the actual function in shared memory and then update that functions entry in the GOT table to point to the actual executable code for the linked function instead of pointing back to the PLT. 6) Now all subsequent calls to that function will go to it’s entry in the PLT just like before which will take it to the GOT just like before, but now the GOT will point to actual address to jump to in memory to execute the function. You can view the .plt and .plt.got section of the ELF file and observe the functions that will need to be linked. objdump -d &lt;binary_name&gt; -mi386:intel ``` ObjDump Output: … Other Disassembled Sections …","headline":"PLT -&gt; GOT Linking Walkthrough","mainEntityOfPage":{"@type":"WebPage","@id":"/2022/05/01/x86-plt-got-linking-process"},"url":"/2022/05/01/x86-plt-got-linking-process"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+<meta
+  name="keywords"
+  content="" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" href="/favicon.ico" />
+<link
+  rel="alternate"
+  type="application/rss+xml"
+  title="underscoremin - Mini security posts. "
+  href="/feed.xml" />
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="/assets/css/base.css" />
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="/assets/css/highlight.css" />
+
+<!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+    mermaid.initialize(
+        {
+            startOnLoad: true,
+            theme: "base",
+			'themeVariables': {
+				'primaryColor': '#ba91ed',
+			    'primaryTextColor': '#fff',
+			    'primaryBorderColor': '#2b0061',
+			    'lineColor': '#2b0061',
+			    'secondaryColor': '#eae4ef',
+			    'tertiaryColor': '#f2e8ff',
+			    'tertiaryBorderColor': '#2b0061',
+                'darkMode': true,
+            },
+            flowchart: {
+                diagramPadding: 30,
+                rankSpacing: 100,
+                padding: 7,
+                useMaxWidth: true
+            }
+        }
+
+    );
+</script>
+
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"
+  async>
+</script>
+
+
+
+  </head>
+  <body>
+    <div class="container-wrapper">
+      <header class="container-header">
+        <div class="header-info">
+  <span class="header-info-name">underscoremin</span>
+  <span class="header-info-desc">Mini security posts. </span>
+</div>
+<nav class="header-nav">
+  <ul class="header-main-nav">
+    
+    <li class="header-main-nav-item">
+      <a href="/">
+        
+          Index
+        
+      </a>
+    </li>
+    
+    <li class="header-main-nav-item">
+      <a href="/categories">
+        
+          Categories
+        
+      </a>
+    </li>
+    
+    <li class="header-main-nav-item">
+      <a href="/about">
+        
+          About
+        
+      </a>
+    </li>
+    
+  </ul>
+</nav>
+
+      </header>
+      <main class="container-main">
+        <article class="container-post">
+  <div class="post-title">
+    <h1>PLT -> GOT Linking Walkthrough</h1>
+  </div>
+  
+  <div class="post-author print-post-author">
+    <span>_min</span>
+  </div>
+  
+  <div class="post-content">
+    <p><br /> 
+In dynamically linked ELF files, functions used from shared memory need to be 
+linked into the executable at runtime. This is because the executable does not
+contain its own copy of the function and hence does not know its address.<br />
+<br /> 
+Linking functions is done through the use of the <em>Procedure Linkage Table 
+(<strong>PLT</strong>)</em> as well as the <em>Global Offset Table (<strong>GOT</strong>)</em>.<br />
+<br /> 
+The general sequence of events is:
+<br />  <br />
+1) On the first call to a functions that needs to be dynamically loaded, you
+will call the PLT stub for that function.<br />
+2) The PLT stub will then take you to the GOT table entry for that function.<br />
+3) Since it is the first time you are calling this function the GOT table will 
+actually return you back to the PLT stub for that specific function (where you 
+just came from).<br />
+4) Where the GOT returned you to will be an instruction to jump to the dynamic 
+linker which sits lower in memory within the PLT (near the beginning of where 
+the PLT section got loaded into memory). <br />
+5) The dynamic linker will then find the actual function in shared memory and 
+then update that functions entry in the GOT table to point to the actual 
+executable code for the linked function instead of pointing back to the PLT. <br />
+6) Now all subsequent calls to that function will go to it’s entry in the PLT 
+just like before which will take it to the GOT just like before, but now the 
+GOT will point to actual address to jump to in memory to execute the function.
+<br />   <br />
+You can view the <em>.plt</em> and <em>.plt.got</em> section of the ELF file and observe 
+the functions that will need to be linked.<br />
+<br /></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>objdump <span class="nt">-d</span> &lt;binary_name&gt; <span class="nt">-mi386</span>:intel
+</code></pre></div></div>
+<p><br /></p>
+<pre><code class="language-ObjDump">Output:
+... Other Disassembled Sections ...
+
+Disassembly of section .plt:
+
+00001020 &lt;__libc_start_main@plt-0x10&gt;:
+    1020:	ff b3 04 00 00 00    	push   DWORD PTR [ebx+0x4]
+    1026:	ff a3 08 00 00 00    	jmp    DWORD PTR [ebx+0x8]
+    102c:	00 00                	add    BYTE PTR [eax],al
+	...
+
+00001030 &lt;__libc_start_main@plt&gt;:
+    1030:	ff a3 0c 00 00 00    	jmp    DWORD PTR [ebx+0xc]
+    1036:	68 00 00 00 00       	push   0x0
+    103b:	e9 e0 ff ff ff       	jmp    1020 &lt;_init+0x20&gt;
+
+00001040 &lt;printf@plt&gt;:
+    1040:	ff a3 10 00 00 00    	jmp    DWORD PTR [ebx+0x10]
+    1046:	68 08 00 00 00       	push   0x8
+    104b:	e9 d0 ff ff ff       	jmp    1020 &lt;_init+0x20&gt;
+
+00001050 &lt;getchar@plt&gt;:
+    1050:	ff a3 14 00 00 00    	jmp    DWORD PTR [ebx+0x14]
+    1056:	68 10 00 00 00       	push   0x10
+    105b:	e9 c0 ff ff ff       	jmp    1020 &lt;_init+0x20&gt;
+
+Disassembly of section .plt.got:
+
+00001060 &lt;__cxa_finalize@plt&gt;:
+    1060:	ff a3 f0 ff ff ff    	jmp    DWORD PTR [ebx-0x10]
+    1066:	66 90                	xchg   ax,ax
+
+... Other Disassembled Sections ...
+</code></pre>
+<p><br /><br />
+The EBX register in all of the output above will be pointing to the Global 
+Offset Table. We will be looking at <em>printf@plt</em> as an example. First you should
+notice that the memory addresses are all quite small, and this is because these
+values are just offsets, Relative Virtual Addresses (RVAs), once this executable
+is actually loaded into memory, these RVAs will be applied to the base address
+of the executable in memory.
+<br />   <br />
+You can see the first instruction inside <em>printf@plt</em> is to jmp to the address
+held at ebp+0x10. As mentioned before EBP is holding the address of the GOT and 
+so 0x10 is just an offset into that table - presumably the offset of the printf
+entry that table.
+<br />  <br />
+To actually be able to inspect these values we need to run the executable and 
+inspect it with gdb. It’s important to note that if we want to watch the dynamic
+linking process occur we need to break before the first call to the function 
+that we want to inspect, otherwise it will already have been linked. If you were
+to break before the first call to printf@plt then you will be able to inspect 
+the PLT in gdb like so:
+<br /></p>
+<pre><code class="language-GDB">pwndbg&gt; plt
+    Section .plt 0x565fa020-0x565fa060:
+    0x565fa030: __libc_start_main@plt
+    0x565fa040: printf@plt
+    0x565fa050: getchar@plt
+</code></pre>
+<p><br />
+From this we can see that the printf PLT entry is at 0x56610040. If we were to 
+inspect this address and look at the instruction in the PLT entry we would see
+something like:<br />
+<br /></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pwndbg&gt; x/3i 0x56610040
+    0x565fa040 &lt;<span class="nb">printf</span>@plt&gt;:	jmp    DWORD PTR <span class="o">[</span>ebx+0x10]
+    0x565fa046 &lt;<span class="nb">printf</span>@plt+6&gt;:	push   0x8
+    0x565fa04b &lt;<span class="nb">printf</span>@plt+11&gt;:	jmp    0x565fa020
+</code></pre></div></div>
+<p><br />
+This looks pretty identical to the structure we saw in the PLT displayed by 
+objdump, however now we have proper addresses. So if someone were to call 
+printf@plt for the first time, the first instruction after the call they would
+execute is:
+<br /></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0x565fa040 &lt;printf@plt&gt;:	jmp    DWORD PTR [ebx+0x10]
+</code></pre></div></div>
+<p><br />
+This is indexing into the GOT by 0x10, dereferencing that address and jumping to 
+it. Lets break that down a little, first lets have a look at where the GOT is in 
+memory and what it contains there. First i mentioned that EBX holds the value
+of the GOT, I got this information from gdb i.e.:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>EBX  0x565fcff4 <span class="o">(</span>_GLOBAL_OFFSET_TABLE_<span class="o">)</span> ◂— 0x3ef0
+</code></pre></div></div>
+<p><br />
+If we use <em>vmmap</em> to look at the memory layout of our process we will see that 
+the GOT address (EBP+0x10 = 0x565fd004) resides in the <em>DATA</em> segment (It isn’t 
+color coded here so you will have to take my word for it): <br />
+<br /></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0x565f9000 0x565fa000 r--p     1000      0 /root/example
+0x565fa000 0x565fb000 r-xp     1000   1000 /root/example
+0x565fb000 0x565fc000 r--p     1000   2000 /root/example
+0x565fc000 0x565fd000 r--p     1000   2000 /root/example
+<span class="k">**</span>0x565fd000 0x565fe000<span class="k">**</span> rw-p     1000   3000 /root/example
+0x56ce6000 0x56d08000 rw-p    22000      0 <span class="o">[</span>heap]
+0xf7cfb000 0xf7d1d000 r--p    22000      0 /usr/lib/i386-linux-gnu/libc.so.6
+0xf7d1d000 0xf7e96000 r-xp   179000  22000 /usr/lib/i386-linux-gnu/libc.so.6
+0xf7e96000 0xf7f16000 r--p    80000 19b000 /usr/lib/i386-linux-gnu/libc.so.6
+0xf7f16000 0xf7f18000 r--p     2000 21b000 /usr/lib/i386-linux-gnu/libc.so.6
+0xf7f18000 0xf7f19000 rw-p     1000 21d000 /usr/lib/i386-linux-gnu/libc.so.6
+0xf7f19000 0xf7f23000 rw-p     a000      0 <span class="o">[</span>anon_f7f19]
+0xf7f2f000 0xf7f31000 rw-p     2000      0 <span class="o">[</span>anon_f7f2f]
+0xf7f31000 0xf7f35000 r--p     4000      0 <span class="o">[</span>vvar]
+0xf7f35000 0xf7f37000 r-xp     2000      0 <span class="o">[</span>vdso]
+0xf7f37000 0xf7f38000 r--p     1000      0 /usr/lib/i386-linux-gnu/ld-linux.so.2
+0xf7f38000 0xf7f5b000 r-xp    23000   1000 /usr/lib/i386-linux-gnu/ld-linux.so.2
+0xf7f5b000 0xf7f69000 r--p     e000  24000 /usr/lib/i386-linux-gnu/ld-linux.so.2
+0xf7f69000 0xf7f6b000 r--p     2000  31000 /usr/lib/i386-linux-gnu/ld-linux.so.2
+0xf7f6b000 0xf7f6c000 rw-p     1000  33000 /usr/lib/i386-linux-gnu/ld-linux.so.2
+0xff984000 0xff9a5000 rw-p    21000      0 <span class="o">[</span>stack]
+</code></pre></div></div>
+<p><br />
+There isn’t instruction in the DATA section, so instead of using x/i to view 
+the instructions like we did the in the PLT we will just use x/a to view the
+addresses stored in the GOT: <br />
+<br /></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pwndbg&gt; x/a <span class="nv">$ebx</span>+0x10
+    0x565fd004 &lt;<span class="nb">printf</span>@got.plt&gt;:	0x565fa046
+</code></pre></div></div>
+<p><br />
+Notice how GDB has labeled that the address we are inspecting is the address of
+printf@got.plt i.e. printf’s entry in the GOT table. This address hold a another
+address ‘0x565fa046’. If we look back earlier in the post, the instruction in 
+the printf@plt stub was to jump to whatever value as stored in memory at 
+$EBP+0x10, so it wants us to jump to 0x565fa046 but what is there?<br />
+<br /></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pwndbg&gt; x/3i 0x565fa046
+    0x565fa046 &lt;<span class="nb">printf</span>@plt+6&gt;:	push   0x8
+    0x565fa04b &lt;<span class="nb">printf</span>@plt+11&gt;:	jmp    0x565fa020
+    0x565fa050 &lt;getchar@plt&gt;:	jmp    DWORD PTR <span class="o">[</span>ebx+0x14]
+</code></pre></div></div>
+<p><br />
+Its actually just jumping right back to where we came from, this is because this
+is the first call to printf and it has not been linked yet. It will push 0x8 
+onto the stack and then it will jump to 0x565fa020 which just happens to be:<br />
+<br /></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pwndbg&gt; x/10i 0x565fa020
+    0x565fa020:	push   DWORD PTR <span class="o">[</span>ebx+0x4]  
+    0x565fa026:	jmp    DWORD PTR <span class="o">[</span>ebx+0x8]
+    0x565fa02c:	add    BYTE PTR <span class="o">[</span>eax],al
+    0x565fa02e:	add    BYTE PTR <span class="o">[</span>eax],al
+    0x565fa030 &lt;__libc_start_main@plt&gt;:	jmp    DWORD PTR <span class="o">[</span>ebx+0xc]
+    0x565fa036 &lt;__libc_start_main@plt+6&gt;:	push   0x0
+    0x565fa03b &lt;__libc_start_main@plt+11&gt;:	jmp    0x565fa020
+    0x565fa040 &lt;<span class="nb">printf</span>@plt&gt;:	jmp    DWORD PTR <span class="o">[</span>ebx+0x10]
+    0x565fa046 &lt;<span class="nb">printf</span>@plt+6&gt;:	push   0x8
+    0x565fa04b &lt;<span class="nb">printf</span>@plt+11&gt;:	jmp    0x565fa020
+</code></pre></div></div>
+<p><br />
+just slightly further up in the PLT. Near the beginning of the PLT you will have
+your dynamic linker which all PLT stubs will have to go through to link their 
+respective functions.<br />
+<br /></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0x565fa020:	push   DWORD PTR [ebx+0x4]  : Pushes the ELF magic bytes onto the 
+                                        ; stack presumably as a argument for the
+                                        ; linker to use.
+</code></pre></div></div>
+<p><br />
+Now we are jumping to ebx+0x8, we know ebx is the GOT, we know that ebx+0x10 is 
+the offset into the GOT for the printf entry, what about an offset of 0x8?<br />
+<br /></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pwndbg&gt; x/a <span class="nv">$ebx</span>+0x8
+    0x565fcffc:	0xf7f498c0
+pwndbg&gt; x/i 0xf7f498c0
+    0xf7f498c0 &lt;_dl_runtime_resolve&gt;:	push   eax
+</code></pre></div></div>
+<p><br />
+At $ebx+0x8 it stores the address 0xf7f498c0, which is jumped to, and we can 
+see from next line, that 0xf7f498c0 is the address of the dynamic runtime linker
+runtime resolver. This function is what will actually go and find the address of
+printf and then update the value of the GOT with the address of the printf 
+function for subsequent calls. If we were to break at the second use of printf 
+and inspect where its jumping to we will see a similar PLT but a different GOT
+for example, this is right before out second call to printf: <br />
+<br /></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Section .plt 0x565fa020-0x565fa060:
+    0x565fa030: __libc_start_main@plt
+    0x565fa040: <span class="nb">printf</span>@plt
+    0x565fa050: getchar@plt
+pwndbg&gt; x/3i 0x565fa040
+    0x565fa040 &lt;<span class="nb">printf</span>@plt&gt;:	jmp    DWORD PTR <span class="o">[</span>ebx+0x10]
+    0x565fa046 &lt;<span class="nb">printf</span>@plt+6&gt;:	push   0x8
+    0x565fa04b &lt;<span class="nb">printf</span>@plt+11&gt;:	jmp    0x565fa020
+</code></pre></div></div>
+<p><br />
+We can see that the PLT looks the same, what about when we inspect what value 
+is stored at ebx+0x10?<br />
+<br /></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pwndbg&gt; x/a <span class="nv">$ebx</span>+0x10
+    0x565fd004 &lt;<span class="nb">printf</span>@got.plt&gt;:	0xf7d4ee40
+pwndbg&gt; x/3i 0xf7d4ee40
+    0xf7d4ee40 &lt;__printf&gt;:	call   0xf7e69d4d &lt;__x86.get_pc_thunk.ax&gt;
+    0xf7d4ee45 &lt;__printf+5&gt;:	add    eax,0x1c91af
+    0xf7d4ee4a &lt;__printf+10&gt;:	sub    esp,0xc
+</code></pre></div></div>
+<p><br />
+We can see that ebx+0x10 still points to the printf entry in the GOT, but now
+it is storing a different value, instead of jumping back to the PLT like it did
+the first time, it now points to 0xf7d4ee40 which is the first instruction in 
+printf.</p>
+
+  </div>
+  <div class="post-info">
+    <div class="post-date">
+      Written on 
+      2022-05-01
+      
+      .
+    </div>
+    
+    <div class="post-author">
+      Author: _min
+    </div>
+    
+    <div class="post-categories">
+      <span>Categories: </span>
+      
+      <a 
+        href="/categories#x86"
+        class="post-category">
+        x86
+      </a>
+      
+    </div>
+    <div class="post-tags">
+      <span>Tags: </span>
+      
+    </div>
+    <div class="post-other">
+      
+      <div>
+        <span>
+          Next: 
+        </span>
+        <a href="/2022/05/01/x86-real-mode">
+          Real Mode
+        </a>
+      </div>
+      
+      
+      <div>
+        <span>
+          Previous: 
+        </span>
+        <a href="/2022/05/01/x86-leave-instruction">
+          'leave' Instruction
+        </a>
+      </div>
+      
+    </div>
+    
+  </div>
+</article>
+
+      </main>
+      <footer class="container-footer">
+        <div class="footer-copyright">
+  <span class="footer-copyright-text float-left">
+  </span>
+</div>
+
+      </footer>
+    </div>
+  </body>
+</html>
