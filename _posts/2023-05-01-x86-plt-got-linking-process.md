@@ -12,26 +12,32 @@ contain its own copy of the function and hence does not know its address.
 Linking functions is done through the use of the *Procedure Linkage Table 
 (**PLT**)* as well as the *Global Offset Table (**GOT**)*.  
 <br> 
-The general sequence of events is: On the first call to a functions that needs
-to be dynamically loaded, you will call the PLT stub for that function. The PLT
-stub will then take you to the GOT table, since it is the first time you are 
-calling this function the GOT table will actually return you back to the PLT 
-stub for that specific function (where you just came from) and in the stub there
-will be an instruction to jump to the dynamic linker which sits lower in memory
-within the PLT (near the beginning of where the PLT section got loaded into 
-memory). The dynamic linker will then find the actual function in shared memory
-and then update that functions entry in the GOT table to point to the actual 
-executable code for the linked function instead of pointing back to the PLT.
-Now all subsequent calls to that function will go to it's entry in the PLT just
-like before which will take it to the GOT just like before, but now the got will
-point to actual address to jump to in memory to execute the function.   
-<br> 
-You can observe the *.plt* and *.plt.got* section of the ELF file and observe 
+The general sequence of events is:
+<br>    
+1) On the first call to a functions that needs to be dynamically loaded, you
+will call the PLT stub for that function.  
+2) The PLT stub will then take you to the GOT table entry for that function.  
+3) Since it is the first time you are calling this function the GOT table will 
+actually return you back to the PLT stub for that specific function (where you 
+just came from).  
+4) Where the GOT returned you to will be an instruction to jump to the dynamic 
+linker which sits lower in memory within the PLT (near the beginning of where 
+the PLT section got loaded into memory).   
+5) The dynamic linker will then find the actual function in shared memory and 
+then update that functions entry in the GOT table to point to the actual 
+executable code for the linked function instead of pointing back to the PLT.   
+6) Now all subsequent calls to that function will go to it's entry in the PLT 
+just like before which will take it to the GOT just like before, but now the 
+GOT will point to actual address to jump to in memory to execute the function.
+<br>     
+You can view the *.plt* and *.plt.got* section of the ELF file and observe 
 the functions that will need to be linked.  
-<br> 
-```bash
+<br>   
+``` bash
 objdump -d <binary_name> -mi386:intel
-
+```   
+<br>
+``` ObjDump
 Output:
 ... Other Disassembled Sections ...
 
@@ -66,27 +72,27 @@ Disassembly of section .plt.got:
 
 ... Other Disassembled Sections ...
 ```
-<br>
+<br>  
 The EBX register in all of the output above will be pointing to the Global 
 Offset Table. We will be looking at *printf@plt* as an example. First you should
 notice that the memory addresses are all quite small, and this is because these
 values are just offsets, Relative Virtual Addresses (RVAs), once this executable
 is actually loaded into memory, these RVAs will be applied to the base address
-of the executable in memory.   
-<br>   
+of the executable in memory.
+<br>     
 You can see the first instruction inside *printf@plt* is to jmp to the address
-help at ebp+0x10. As mentioned before EBP is holding the address of the GOT and 
+held at ebp+0x10. As mentioned before EBP is holding the address of the GOT and 
 so 0x10 is just an offset into that table - presumably the offset of the printf
-entry that table.   
-<br>
+entry that table.
+<br>    
 To actually be able to inspect these values we need to run the executable and 
 inspect it with gdb. It's important to note that if we want to watch the dynamic
 linking process occur we need to break before the first call to the function 
 that we want to inspect, otherwise it will already have been linked. If you were
 to break before the first call to printf@plt then you will be able to inspect 
-the PLT in gdb like so:   
-<br>
-```bash
+the PLT in gdb like so:
+<br>      
+```GDB
 pwndbg> plt
     Section .plt 0x565fa020-0x565fa060:
     0x565fa030: __libc_start_main@plt
